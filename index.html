@@ -89,6 +89,30 @@
     .dashboard-source { margin-top: 16px; color: #82786b; font-size: 13px; }
     @media (max-width:960px) { .dashboard-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .chart-grid { grid-template-columns: 1fr; } }
     @media (max-width:620px) { .dashboard-grid { grid-template-columns: 1fr; } .chart-card { padding: 16px; } }
+
+    .generator-grid { display: grid; grid-template-columns: minmax(320px, .9fr) minmax(0, 1.1fr); gap: 18px; align-items: start; }
+    .generator-card { border: 1px solid var(--line); border-radius: 10px; background: rgba(255,255,255,.78); padding: 20px; }
+    .generator-card h2, .generator-card h3 { margin-top: 0; }
+    .generator-form { display: grid; gap: 14px; }
+    .field-row { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 12px; }
+    .file-drop { position: relative; min-height: 170px; border: 1px dashed #cbb991; border-radius: 10px; background: #fffaf0; display: grid; place-items: center; text-align: center; padding: 18px; overflow: hidden; }
+    .file-drop input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+    .file-drop img { max-width: 100%; max-height: 210px; object-fit: contain; border-radius: 8px; display: none; }
+    .file-drop.has-image span { display: none; }
+    .file-drop.has-image img { display: block; }
+    .segmented { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 8px; }
+    .segmented button { border: 1px solid var(--line); background: #fffaf0; color: var(--ink); border-radius: 8px; padding: 11px 12px; font-weight: 900; cursor: pointer; }
+    .segmented button.active { background: var(--gold); border-color: var(--gold); color: #251d12; }
+    .generator-actions { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+    .key-note, .api-status { color: var(--muted); font-size: 13px; line-height: 1.6; }
+    .api-status strong { color: var(--gold-dark); }
+    .prompt-preview { white-space: pre-wrap; min-height: 170px; max-height: 340px; overflow: auto; border: 1px solid var(--line); border-radius: 8px; padding: 14px; background: #fffaf0; color: #3d372d; font-size: 14px; line-height: 1.65; }
+    .image-result { min-height: 460px; border: 1px solid var(--line); border-radius: 10px; background: #fffaf0; display: grid; place-items: center; padding: 14px; overflow: hidden; }
+    .image-result img { width: 100%; max-height: 660px; object-fit: contain; border-radius: 8px; box-shadow: 0 18px 50px rgba(49,42,30,.18); }
+    .image-placeholder { color: var(--muted); text-align: center; line-height: 1.8; }
+    .download-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 12px; }
+    @media (max-width:960px) { .generator-grid { grid-template-columns: 1fr; } }
+    @media (max-width:620px) { .field-row, .segmented { grid-template-columns: 1fr; } .generator-card { padding: 16px; } .image-result { min-height: 320px; } }
     @media (max-width:620px) { .page{width:min(100% - 20px,520px); padding:12px 0 26px;} .topbar{align-items:flex-start; flex-direction:column;} .nav{justify-content:flex-start;} .shell{border-radius:18px;} .intro,.section,.contact{padding:24px 18px;} .grid{grid-template-columns:1fr;} .actions .button,.contact .button{width:100%;} .visual{min-height:330px;} }
   </style>
 </head>
@@ -96,7 +120,7 @@
   <main class="page">
     <header class="topbar" aria-label="網站導覽">
       <div class="brand"><span class="dot" aria-hidden="true"></span><span>Maddy Digital Card</span></div>
-      <nav class="nav" aria-label="主要分頁"><a href="#card" data-page-link="card" class="active">個人名片</a><a href="#tools" data-page-link="tools">品牌行銷工具站</a><a href="#dashboard" data-page-link="dashboard">數據儀表板</a><a href="mailto:maddy@reilivingcorp.com">聯絡</a></nav>
+      <nav class="nav" aria-label="主要分頁"><a href="#card" data-page-link="card" class="active">個人名片</a><a href="#tools" data-page-link="tools">品牌行銷工具站</a><a href="#dashboard" data-page-link="dashboard">數據儀表板</a><a href="#ads" data-page-link="ads">廣告圖生成</a><a href="mailto:maddy@reilivingcorp.com">聯絡</a></nav>
     </header>
     <article class="shell">
       <div class="page-view active" id="card-page">
@@ -155,6 +179,41 @@
             <h3 id="toolTitle">產出結果</h3>
             <pre class="tool-result" id="toolResult">先填左邊資料，再選一個功能產生初稿。產出後可直接複製，再交給小黃金做 80 分優化。</pre>
             <div class="copy-row"><button class="button" type="button" id="copyToolResult">複製結果</button></div>
+          </div>
+        </div>
+      </section>
+      </div>
+
+      <div class="page-view" id="ads-page">
+      <section class="subpage-head">
+        <h1 style="font-size:clamp(38px,5vw,64px);line-height:1.05">廣告圖生成</h1>
+        <p>上傳產品照，輸入商品重點、文案與視覺風格，快速生成「帶文案的廣告行銷圖」或「商品棚拍情境圖」。適合先產出 60 分提案素材，再交給設計或內部討論優化。</p>
+      </section>
+      <section class="section" id="ad-generator">
+        <div class="generator-grid">
+          <div class="generator-card">
+            <h2>生成設定</h2>
+            <div class="generator-form">
+              <div class="field"><label for="apiBaseUrl">安全後端入口</label><input id="apiBaseUrl" type="url" placeholder="留空使用同網域 /api，或填 https://你的後端網域"><p class="key-note">OpenAI API Key 請放在後端環境變數 <strong>OPENAI_API_KEY</strong>，不要放在 HTML。GitHub Pages 本身不能執行後端，需搭配 Vercel / Cloudflare Worker / 公司伺服器。</p></div>
+              <div class="field"><label>生成模式</label><div class="segmented" role="group" aria-label="生成模式"><button type="button" class="active" data-ad-mode="ad">帶文案的廣告行銷圖</button><button type="button" data-ad-mode="scene">商品棚拍情境圖</button></div></div>
+              <div class="field"><label for="productPhoto">產品照片</label><div class="file-drop" id="productDrop"><input id="productPhoto" type="file" accept="image/png,image/jpeg,image/webp"><span>點擊上傳產品照<br>建議使用清楚、背景單純的商品照片</span><img id="productPreview" alt="產品照片預覽"></div></div>
+              <div class="field-row"><div class="field"><label for="adProductName">產品名稱</label><input id="adProductName" value="GA黃金甲保健產品" placeholder="例如：白藜蘆醇飲"></div><div class="field"><label for="adAudience">目標客群</label><input id="adAudience" value="重視健康、想日常保養的會員" placeholder="例如：熟齡女性、家庭照護者"></div></div>
+              <div class="field"><label for="adSellingPoints">產品賣點 / 使用情境</label><textarea id="adSellingPoints" placeholder="寫下產品特色、適合誰、什麼時候使用">日常健康保養、方便飲用、適合想建立穩定保養習慣的消費者。</textarea></div>
+              <div class="field-row"><div class="field"><label for="adStyle">視覺風格</label><select id="adStyle"><option>溫暖高級感</option><option>乾淨棚拍</option><option>自然生活感</option><option>節慶活動感</option><option>社群貼文感</option></select></div><div class="field"><label for="adSize">圖片比例</label><select id="adSize"><option value="1024x1024">方形 1:1</option><option value="1024x1536">直式 2:3</option><option value="1536x1024">橫式 3:2</option></select></div></div>
+              <div class="field"><label for="adCopy">主文案 / 標語</label><input id="adCopy" value="把日常保養，變成被好好照顧的習慣" placeholder="例如：給每天努力的你，一份溫柔保養"></div>
+              <div class="field-row"><div class="field"><label for="adModel">模型</label><select id="adModel"><option value="gpt-image-1">gpt-image-1</option><option value="gpt-image-2">gpt-image-2</option></select></div><div class="field"><label for="adQuality">品質</label><select id="adQuality"><option value="medium">medium</option><option value="high">high</option><option value="low">low</option></select></div></div>
+              <div class="generator-actions"><button class="button" type="button" id="buildAdPrompt">產生提示詞</button><button class="button" type="button" id="generateAdCopy">AI 產生文案</button><button class="button primary" type="button" id="generateAdImage">生成圖片</button></div>
+              <p class="api-status" id="adApiStatus">狀態：等待設定。</p>
+            </div>
+          </div>
+          <div class="generator-card">
+            <h2>提示詞與結果</h2>
+            <h3>生成提示詞</h3>
+            <div class="prompt-preview" id="adPromptPreview">請先上傳產品照並填寫設定，再產生提示詞。</div>
+            <div class="download-row"><button class="button" type="button" id="copyAdPrompt">複製提示詞</button></div>
+            <h3 style="margin-top:20px">生成圖片</h3>
+            <div class="image-result" id="adImageResult"><div class="image-placeholder">生成後會顯示在這裡。<br>若瀏覽器阻擋 API 呼叫，代表需要改成公司後端代理版本。</div></div>
+            <div class="download-row"><a class="button" id="downloadAdImage" href="#" download="maddy-ad-image.png" style="display:none">下載圖片</a></div>
           </div>
         </div>
       </section>
@@ -326,15 +385,169 @@
       renderDashboard();
     }
   </script>
+
+
+  <script>
+    function initAdGenerator() {
+      var state = { mode: "ad", file: null, resultUrl: "" };
+      var q = function(id) { return document.getElementById(id); };
+      var setStatus = function(text, isError) {
+        var el = q("adApiStatus");
+        if (!el) return;
+        el.innerHTML = "狀態：" + (isError ? "<strong>" + text + "</strong>" : text);
+      };
+      function apiBase() {
+        var custom = q("apiBaseUrl") ? q("apiBaseUrl").value.trim().replace(/\/$/, "") : "";
+        return custom || "";
+      }
+      function apiUrl(path) { return apiBase() + path; }
+      function buildPrompt() {
+        var product = q("adProductName").value.trim() || "GA黃金甲產品";
+        var audience = q("adAudience").value.trim() || "重視健康的會員";
+        var points = q("adSellingPoints").value.trim() || "日常健康保養、方便使用、建立穩定保養習慣";
+        var style = q("adStyle").value;
+        var copy = q("adCopy").value.trim();
+        var textRule = state.mode === "ad"
+          ? "請在圖片中加入清楚、可讀的繁體中文主標語：'" + copy + "'。可搭配少量副標，但不要塞滿文字。"
+          : "不要在圖片中放任何文字、Logo 或浮水印，重點是商品本身與自然使用情境。";
+        var layout = state.mode === "ad"
+          ? "做成可直接用於社群廣告與活動頁首圖的行銷視覺，商品要清楚、畫面有留白、文案層級明確。"
+          : "做成專業商品棚拍情境圖，商品放在真實但乾淨的生活場景中，光線柔和，質感高級。";
+        return [
+          "請根據上傳的產品照片，生成一張 GA黃金甲品牌可用的行銷圖片。",
+          "產品名稱：" + product,
+          "目標客群：" + audience,
+          "產品賣點與使用情境：" + points,
+          "視覺風格：" + style,
+          layout,
+          textRule,
+          "品牌感：溫暖、信任、健康照顧、乾淨高級，不要誇大療效，不要醫療宣稱。",
+          "構圖要求：產品外觀需保留辨識度，避免變形；背景可優化但不要讓商品看起來不像原本照片。",
+          "輸出：一張完成度高、可作為行銷初稿的圖片。"
+        ].join("\n");
+      }
+      function refreshPrompt() {
+        var prompt = buildPrompt();
+        q("adPromptPreview").textContent = prompt;
+        return prompt;
+      }
+      function readFileAsDataUrl(file) {
+        return new Promise(function(resolve, reject) {
+          var reader = new FileReader();
+          reader.onload = function() { resolve(reader.result); };
+          reader.onerror = reject;
+          reader.readAsDataURL(file);
+        });
+      }
+      document.querySelectorAll("[data-ad-mode]").forEach(function(btn) {
+        btn.addEventListener("click", function() {
+          state.mode = btn.getAttribute("data-ad-mode");
+          document.querySelectorAll("[data-ad-mode]").forEach(function(b) { b.classList.toggle("active", b === btn); });
+          refreshPrompt();
+        });
+      });
+      var fileInput = q("productPhoto");
+      if (fileInput) fileInput.addEventListener("change", function() {
+        var file = fileInput.files && fileInput.files[0];
+        if (!file) return;
+        state.file = file;
+        var preview = q("productPreview");
+        preview.src = URL.createObjectURL(file);
+        q("productDrop").classList.add("has-image");
+        setStatus("已載入產品照，可以生成提示詞。", false);
+        refreshPrompt();
+      });
+      ["adProductName","adAudience","adSellingPoints","adStyle","adCopy"].forEach(function(id) {
+        var el = q(id);
+        if (el) el.addEventListener("input", refreshPrompt);
+      });
+      q("buildAdPrompt").addEventListener("click", function() { refreshPrompt(); setStatus("提示詞已更新。", false); });
+      q("copyAdPrompt").addEventListener("click", async function() { await navigator.clipboard.writeText(refreshPrompt()); setStatus("提示詞已複製。", false); });
+      q("generateAdCopy").addEventListener("click", async function() {
+        var btn = q("generateAdCopy");
+        btn.disabled = true;
+        btn.textContent = "產生中...";
+        setStatus("正在請後端產生行銷文案。", false);
+        try {
+          var payload = {
+            mode: state.mode,
+            productName: q("adProductName").value,
+            audience: q("adAudience").value,
+            sellingPoints: q("adSellingPoints").value,
+            style: q("adStyle").value
+          };
+          var response = await fetch(apiUrl("/api/generate-copy"), {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+          });
+          var data = await response.json().catch(function() { return {}; });
+          if (!response.ok) throw new Error((data.error && data.error.message) || data.error || "文案 API 呼叫失敗");
+          q("adCopy").value = data.copy || q("adCopy").value;
+          refreshPrompt();
+          setStatus("AI 文案已產生。", false);
+        } catch (error) {
+          setStatus(error.message + "。請確認後端已部署，且環境變數 OPENAI_API_KEY 已設定。", true);
+        } finally {
+          btn.disabled = false;
+          btn.textContent = "AI 產生文案";
+        }
+      });
+      q("generateAdImage").addEventListener("click", async function() {
+        if (!state.file) { setStatus("請先上傳產品照。", true); return; }
+        var btn = q("generateAdImage");
+        btn.disabled = true;
+        btn.textContent = "生成中...";
+        setStatus("正在把圖片送到安全後端生成，可能需要 20-60 秒。", false);
+        try {
+          var imageDataUrl = await readFileAsDataUrl(state.file);
+          var response = await fetch(apiUrl("/api/generate-ad-image"), {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              prompt: refreshPrompt(),
+              imageDataUrl: imageDataUrl,
+              imageName: state.file.name || "product.png",
+              model: q("adModel").value,
+              size: q("adSize").value,
+              quality: q("adQuality").value
+            })
+          });
+          var data = await response.json().catch(function() { return {}; });
+          if (!response.ok) throw new Error((data.error && data.error.message) || data.error || "圖片 API 呼叫失敗");
+          var imageUrl = data.imageUrl || (data.b64_json ? "data:image/png;base64," + data.b64_json : "");
+          if (!imageUrl) throw new Error("後端有回應，但沒有收到圖片資料。");
+          state.resultUrl = imageUrl;
+          q("adImageResult").innerHTML = '<img alt="生成的廣告圖片" src="' + imageUrl + '">';
+          var download = q("downloadAdImage");
+          download.href = imageUrl;
+          download.style.display = "inline-flex";
+          setStatus("圖片生成完成。", false);
+        } catch (error) {
+          setStatus(error.message + "。請確認安全後端已部署。", true);
+        } finally {
+          btn.disabled = false;
+          btn.textContent = "生成圖片";
+        }
+      });
+      refreshPrompt();
+    }
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", initAdGenerator);
+    } else {
+      initAdGenerator();
+    }
+  </script>
   <script>
     function initMaddyTabs() {
       function resolvePage(hash) {
         if (hash === "#tools") return "tools";
         if (hash === "#dashboard") return "dashboard";
+        if (hash === "#ads") return "ads";
         return "card";
       }
       window.showPage = function(page) {
-        var selected = page === "tools" ? "tools" : page === "dashboard" ? "dashboard" : "card";
+        var selected = page === "tools" ? "tools" : page === "dashboard" ? "dashboard" : page === "ads" ? "ads" : "card";
         document.querySelectorAll(".page-view").forEach(function(view) {
           view.classList.toggle("active", view.id === selected + "-page");
         });
