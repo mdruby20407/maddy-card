@@ -183,26 +183,6 @@
     </article>
   </main>
   <script>
-    function showPage(page) {
-      var selected = page === "tools" ? "tools" : page === "dashboard" ? "dashboard" : "card";
-      document.querySelectorAll(".page-view").forEach(function(view) { view.classList.remove("active"); });
-      document.getElementById(selected + "-page").classList.add("active");
-      document.querySelectorAll("[data-page-link]").forEach(function(link) {
-        link.classList.toggle("active", link.getAttribute("data-page-link") === selected);
-      });
-      if (location.hash !== "#" + selected) history.replaceState(null, "", "#" + selected);
-      window.scrollTo({ top: 0, behavior: "smooth" });
-      if (selected === "dashboard") renderDashboard();
-    }
-    document.querySelectorAll("[data-page-link]").forEach(function(link) {
-      link.addEventListener("click", function(event) {
-        event.preventDefault();
-        showPage(link.getAttribute("data-page-link"));
-      });
-    });
-    window.addEventListener("hashchange", function() { showPage(location.hash === "#tools" ? "tools" : location.hash === "#dashboard" ? "dashboard" : "card"); });
-    showPage(location.hash === "#tools" ? "tools" : location.hash === "#dashboard" ? "dashboard" : "card"); });
-    showPage(location.hash === "#tools" ? "tools" : "card");
     function toolValue(id, fallback) {
       var el = document.getElementById(id);
       return el && el.value.trim() ? el.value.trim() : fallback;
@@ -284,6 +264,46 @@
         {name:"AOV /100", color:"#7a5a20", values:d.monthly.map(function(m){return m.aov/100;})}
       ], labels);
       document.getElementById("channelTable").innerHTML = "<table class="dashboard-table"><thead><tr><th>通路</th><th>營收</th><th>訂單</th><th>花費</th><th>ROAS</th></tr></thead><tbody>" + d.channels.map(function(c){return "<tr><td>"+c.channel+"</td><td>"+money(c.revenue)+"</td><td>"+intFmt(c.orders)+"</td><td>"+money(c.spend)+"</td><td>"+(c.spend?Math.round(c.roas*10)/10:"-")+"</td></tr>";}).join("") + "</tbody></table>";
+    }
+  </script>
+  <script>
+    function initMaddyTabs() {
+      function resolvePage(hash) {
+        if (hash === "#tools") return "tools";
+        if (hash === "#dashboard") return "dashboard";
+        return "card";
+      }
+      window.showPage = function(page) {
+        var selected = page === "tools" ? "tools" : page === "dashboard" ? "dashboard" : "card";
+        document.querySelectorAll(".page-view").forEach(function(view) {
+          view.classList.toggle("active", view.id === selected + "-page");
+        });
+        document.querySelectorAll("[data-page-link]").forEach(function(link) {
+          link.classList.toggle("active", link.getAttribute("data-page-link") === selected);
+        });
+        if (location.hash !== "#" + selected) {
+          history.replaceState(null, "", "#" + selected);
+        }
+        if (selected === "dashboard" && typeof renderDashboard === "function") {
+          renderDashboard();
+        }
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      };
+      document.querySelectorAll("[data-page-link]").forEach(function(link) {
+        link.addEventListener("click", function(event) {
+          event.preventDefault();
+          window.showPage(link.getAttribute("data-page-link"));
+        });
+      });
+      window.addEventListener("hashchange", function() {
+        window.showPage(resolvePage(location.hash));
+      });
+      window.showPage(resolvePage(location.hash));
+    }
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", initMaddyTabs);
+    } else {
+      initMaddyTabs();
     }
   </script>
 </body>
