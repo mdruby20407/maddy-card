@@ -210,9 +210,10 @@
               <div class="field-row"><div class="field"><label for="adStyle">視覺風格</label><select id="adStyle"><option>溫暖高級感</option><option>乾淨棚拍</option><option>自然生活感</option><option>節慶活動感</option><option>社群貼文感</option></select></div><div class="field"><label for="adTheme">主色系</label><select id="adTheme"><option value="gold">品牌金</option><option value="green">草本綠</option><option value="rose">溫柔玫瑰</option><option value="blue">清爽藍</option><option value="charcoal">高級黑金</option></select></div></div>
               <div class="field-row"><div class="field"><label for="adSize">圖片比例</label><select id="adSize"><option value="1080x1080">方形 1:1</option><option value="1080x1350">社群直式 4:5</option><option value="1080x1920">限動 9:16</option><option value="1600x900">橫式 16:9</option></select></div><div class="field"><label for="adCta">CTA 按鈕文字</label><input id="adCta" value="了解更多" placeholder="例如：立即諮詢、查看方案"></div></div>
               <div class="field-row"><div class="field"><label for="productScale">商品大小</label><input id="productScale" type="range" min="42" max="88" value="66"></div><div class="field"><label for="textScale">文字大小</label><input id="textScale" type="range" min="80" max="125" value="100"></div></div>
-              <div class="field" id="aiBackendField" style="display:none"><label for="aiBackendUrl">AI 後端網址</label><input id="aiBackendUrl" type="url" placeholder="例如：https://你的-vercel 網址；留空使用同網域 /api"><p class="key-note">GitHub Pages 不能執行 AI 後端。若要真的生圖，請用 Vercel 網址或同 repo 部署後的網址。</p></div>
+              <div class="field" id="tempKeyField" style="display:none"><label for="tempOpenAiKey">臨時測試 OpenAI API Key</label><input id="tempOpenAiKey" type="password" autocomplete="off" placeholder="只在這次瀏覽器使用，不會寫進網站"><p class="key-note">臨時測試用：Key 只存在目前頁面記憶體，重新整理就消失。正式公開使用仍建議改 Vercel 後端。</p></div>
+              <div class="field" id="aiBackendField" style="display:none"><label for="aiBackendUrl">AI 後端網址</label><input id="aiBackendUrl" type="url" placeholder="可選：例如 https://你的-vercel 網址；留空則用上方臨時 Key 直接測"><p class="key-note">如果瀏覽器直接呼叫 OpenAI 被擋，請改用 Vercel 後端網址。</p></div>
               <div class="field" id="aiPhotoStyleField" style="display:none"><label for="aiPhotoStyle">AI 照片描述</label><textarea id="aiPhotoStyle" placeholder="描述你想要的廣告照片情境">生成一張可用於社群貼文的高級保健食品廣告照片：產品放在乾淨明亮的桌面上，柔和自然光，背景有健康生活感，不要醫療宣稱，畫面留白可放文案。</textarea></div>
-              <div class="generator-actions"><button class="button" type="button" id="sampleAdData">一鍵範例</button><button class="button primary" type="button" id="renderAdImage">立即合成圖片</button><button class="button primary" type="button" id="generateAiPhoto" style="display:none">AI 生成照片</button></div>
+              <div class="generator-actions"><button class="button" type="button" id="sampleAdData">一鍵範例</button><button class="button primary" type="button" id="renderAdImage">立即合成圖片</button><button class="button" type="button" id="optimizeAiPrompt" style="display:none">AI 優化提示詞</button><button class="button primary" type="button" id="generateAiPhoto" style="display:none">AI 生成照片</button></div>
               <p class="api-status" id="adApiStatus">狀態：可直接作圖，不需 OpenAI API Key。</p>
             </div>
           </div>
@@ -413,16 +414,58 @@
         state.makerMode = mode;
         document.querySelectorAll("[data-maker-mode]").forEach(function(btn) { btn.classList.toggle("active", btn.getAttribute("data-maker-mode") === mode); });
         var isAi = mode === "ai";
-        ["aiBackendField", "aiPhotoStyleField"].forEach(function(id) { var el = q(id); if (el) el.style.display = isAi ? "block" : "none"; });
+        ["tempKeyField", "aiBackendField", "aiPhotoStyleField"].forEach(function(id) { var el = q(id); if (el) el.style.display = isAi ? "block" : "none"; });
         q("generateAiPhoto").style.display = isAi ? "inline-flex" : "none";
+        q("optimizeAiPrompt").style.display = isAi ? "inline-flex" : "none";
         q("renderAdImage").style.display = isAi ? "none" : "inline-flex";
         q("adCanvas").style.display = isAi ? "none" : "block";
         q("aiPhotoResult").style.display = isAi ? "grid" : "none";
-        status(isAi ? "AI 生成照片需後端部署；請上傳產品照後產生。" : "可直接作圖，不需 OpenAI API Key。");
+        status(isAi ? "AI 模式會先優化提示詞，再呼叫安全後端生圖；GitHub Pages 需填 Vercel 後端網址。" : "可直接作圖，不需 OpenAI API Key。");
+        if (isAi && isGithubPagesWithoutBackend()) renderAiBlockedMessage("你現在開的是 GitHub Pages 靜態網站，這裡沒有後端可以保護 OpenAI API Key。");
       }
       function aiBaseUrl() {
         var custom = q("aiBackendUrl") ? q("aiBackendUrl").value.trim().replace(/\/$/, "") : "";
         return custom || "";
+      }
+      function tempOpenAiKey() {
+        return q("tempOpenAiKey") ? q("tempOpenAiKey").value.trim() : "";
+      }
+      async function optimizePromptDirectly(key) {
+        var prompt = [
+          "你是 GA黃金甲的品牌行銷視覺企劃。請把使用者輸入改寫成適合圖片生成模型的繁體中文提示詞。",
+          "請回傳一段完整提示詞，不要 Markdown，不要解釋。",
+          "產品名稱：" + (q("adProductName").value || "GA黃金甲產品"),
+          "目標客群：" + (q("adAudience").value || "重視健康的會員"),
+          "主標語：" + (q("adCopy").value || ""),
+          "副標：" + (q("adSubCopy").value || ""),
+          "使用者風格描述：" + (q("aiPhotoStyle").value || ""),
+          "限制：不要醫療宣稱，不要誇大療效，產品包裝需保留辨識度，畫面可用於社群廣告或貼文。"
+        ].join("\n");
+        var response = await fetch("https://api.openai.com/v1/responses", {
+          method: "POST",
+          headers: { "Authorization": "Bearer " + key, "Content-Type": "application/json" },
+          body: JSON.stringify({ model: "gpt-4.1-mini", input: prompt, temperature: 0.5 })
+        });
+        var data = await response.json().catch(function() { return {}; });
+        if (!response.ok) throw new Error((data.error && data.error.message) || "OpenAI 文案優化失敗");
+        return data.output_text || ((data.output || []).map(function(item) { return (item.content || []).map(function(part) { return part.text || ""; }).join(""); }).join(""));
+      }
+      async function generateImageDirectly(key, file) {
+        var form = new FormData();
+        form.append("model", "gpt-image-1");
+        form.append("prompt", buildAiPrompt());
+        form.append("image", file, file.name || "product.png");
+        form.append("size", q("adSize").value === "1080x1920" ? "1024x1536" : q("adSize").value === "1600x900" ? "1536x1024" : "1024x1024");
+        form.append("quality", "medium");
+        var response = await fetch("https://api.openai.com/v1/images/edits", {
+          method: "POST",
+          headers: { "Authorization": "Bearer " + key },
+          body: form
+        });
+        var data = await response.json().catch(function() { return {}; });
+        if (!response.ok) throw new Error((data.error && data.error.message) || "OpenAI 圖片生成失敗");
+        var item = data.data && data.data[0];
+        return (item && item.url) || (item && item.b64_json ? "data:image/png;base64," + item.b64_json : "");
       }
       function readFileAsDataUrl(file) {
         return new Promise(function(resolve, reject) {
@@ -431,6 +474,13 @@
           reader.onerror = reject;
           reader.readAsDataURL(file);
         });
+      }
+      function renderAiBlockedMessage(message) {
+        q("aiPhotoResult").style.display = "grid";
+        q("aiPhotoResult").innerHTML = '<div class="image-placeholder"><strong>目前還不能直接產圖</strong><br>' + message + '<br><br>需要把這個 repo 接到 Vercel，並在 Vercel 設定 OPENAI_API_KEY，AI 圖片才會真的生成。</div>';
+      }
+      function isGithubPagesWithoutBackend() {
+        return location.hostname.indexOf('github.io') >= 0 && !q("aiBackendUrl").value.trim();
       }
       function buildAiPrompt() {
         return [
@@ -625,13 +675,79 @@
       document.querySelectorAll("[data-maker-mode]").forEach(function(btn) {
         btn.addEventListener("click", function() { setMakerMode(btn.getAttribute("data-maker-mode")); });
       });
+      q("optimizeAiPrompt").addEventListener("click", async function() {
+        var base = aiBaseUrl();
+        var key = tempOpenAiKey();
+        if (key && !base) {
+          status("正在用臨時 Key 呼叫 OpenAI 優化提示詞。");
+          try {
+            var optimizedText = await optimizePromptDirectly(key);
+            q("aiPhotoStyle").value = optimizedText;
+            refreshPrompt();
+            q("aiPhotoResult").innerHTML = '<div class="image-placeholder"><strong>提示詞已由 AI 優化</strong><br>現在可以按「AI 生成照片」。</div>';
+            status("AI 已優化提示詞，可以生成照片。");
+          } catch (error) {
+            renderAiBlockedMessage("臨時 Key 優化失敗：" + error.message + "。若瀏覽器跨網域被擋，請改用 Vercel 後端。");
+            status("AI 優化失敗：" + error.message);
+          }
+          return;
+        }
+        if (!base && location.hostname.indexOf('github.io') >= 0) {
+          var optimized = [
+            "高品質商業廣告照片，產品為主角，保留產品包裝辨識度。",
+            "場景：乾淨明亮的桌面或生活情境，柔和自然光，健康保養氛圍。",
+            "構圖：商品清楚置中或三分構圖，留白可放文案，背景不要雜亂。",
+            "品牌感：溫暖、信任、乾淨高級、日常照顧感。",
+            "限制：不要醫療宣稱，不要誇大療效，不要新增不存在的品牌字樣，不要讓產品包裝變形。"
+          ].join("\n");
+          q("aiPhotoStyle").value = optimized;
+          refreshPrompt();
+          renderAiBlockedMessage("我已先幫你把提示詞優化好；但真正生圖需要 Vercel 後端。你可以先複製提示詞，或接好後端後再按 AI 生成照片。");
+          status("已用本機規則優化提示詞；尚未呼叫 OpenAI，因為目前沒有安全後端。");
+          return;
+        }
+        status("正在呼叫後端優化提示詞。");
+        try {
+          var response = await fetch(base + "/api/generate-copy", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              mode: state.mode,
+              productName: q("adProductName").value,
+              audience: q("adAudience").value,
+              sellingPoints: q("adSubCopy").value,
+              style: q("adStyle").value
+            })
+          });
+          var data = await response.json().catch(function() { return {}; });
+          if (!response.ok) throw new Error((data.error && data.error.message) || data.error || "提示詞優化失敗");
+          q("adCopy").value = data.copy || q("adCopy").value;
+          q("aiPhotoStyle").value = buildAiPrompt();
+          refreshPrompt();
+          status("AI 已優化文案與提示詞，可以生成照片。");
+        } catch (error) {
+          renderAiBlockedMessage("提示詞優化失敗：" + error.message);
+          status("提示詞優化失敗：" + error.message);
+        }
+      });
       q("generateAiPhoto").addEventListener("click", async function() {
-        if (!state.imageUrl) { status("請先上傳產品照，AI 才能參考產品外觀。"); return; }
+        if (!state.imageUrl) { renderAiBlockedMessage("請先上傳產品照，AI 才能參考產品外觀。"); status("請先上傳產品照。"); return; }
+        var directKey = tempOpenAiKey();
+        if (isGithubPagesWithoutBackend() && !directKey) { renderAiBlockedMessage("你已經切到 AI 生成模式，但目前公開站是 GitHub Pages，沒有後端可呼叫 OpenAI。若只是測試，請貼上臨時 OpenAI API Key；正式版請部署 Vercel 後端。"); status("尚未輸入臨時 Key，也未連接安全後端，所以不會產出圖片。"); return; }
         var btn = q("generateAiPhoto");
         btn.disabled = true; btn.textContent = "AI 生成中...";
         status("正在呼叫 AI 後端生成照片，可能需要 20-60 秒。");
         try {
           var file = q("productPhoto").files && q("productPhoto").files[0];
+          if (directKey && !aiBaseUrl()) {
+            status("正在用臨時 Key 直接呼叫 OpenAI 生成圖片，可能需要 20-60 秒。");
+            var directImageUrl = await generateImageDirectly(directKey, file);
+            if (!directImageUrl) throw new Error("OpenAI 有回應，但沒有收到圖片資料");
+            q("aiPhotoResult").innerHTML = '<img class="ai-generated-image" alt="AI 生成的廣告照片" src="' + directImageUrl + '">';
+            q("downloadAdImage").href = directImageUrl;
+            status("AI 照片生成完成，可下載 PNG。");
+            return;
+          }
           var imageDataUrl = await readFileAsDataUrl(file);
           var response = await fetch(aiBaseUrl() + "/api/generate-ad-image", {
             method: "POST",
