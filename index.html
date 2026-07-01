@@ -221,49 +221,109 @@
   <script>
     var DASHBOARD_DATA = {"generatedAt":"2026-07-01T04:10:27.979Z","monthly":[{"month":"1月","revenue":1275183,"target":2061324,"orders":325,"spend":142176.59,"achievement":0.6186232731972267,"aov":3923.64,"roas":8.96900818904153},{"month":"2月","revenue":2444224,"target":4220768,"orders":555,"spend":221887.72999999998,"achievement":0.5790946102699793,"aov":4404.007207207207,"roas":11.015588829540057},{"month":"3月","revenue":1504317,"target":2759984,"orders":445,"spend":165061.86,"achievement":0.5450455509887013,"aov":3380.487640449438,"roas":9.11365593481135},{"month":"4月","revenue":1208119,"target":3010274,"orders":325,"spend":181450.26,"achievement":0.4013319053348632,"aov":3717.289230769231,"roas":6.658127687444481},{"month":"5月","revenue":1417900,"target":2137582,"orders":294,"spend":185741.2,"achievement":0.6633195825937905,"aov":4822.789115646258,"roas":7.633739848778838},{"month":"6月","revenue":745761,"target":2826728,"orders":177,"spend":1260,"achievement":0.2638248179520633,"aov":4213.338983050848,"roas":591.8738095238095}],"channels":[{"channel":"Google ads","revenue":2457955,"orders":649,"spend":199387.54,"aov":3787.2958397534667,"roas":12.327525581588498},{"channel":"直接流量","revenue":1907013,"orders":485,"spend":0,"aov":3931.9855670103093,"roas":0},{"channel":"LINE Push","revenue":1095967,"orders":212,"spend":41052.1,"aov":5169.655660377359,"roas":26.69697774291693},{"channel":"Meta ads","revenue":829791,"orders":246,"spend":583104,"aov":3373.1341463414633,"roas":1.4230583223575897},{"channel":"自然流量(SEO)","revenue":829653,"orders":214,"spend":0,"aov":3876.8831775700933,"roas":0},{"channel":"LINE OA","revenue":695242,"orders":156,"spend":7560,"aov":4456.679487179487,"roas":91.96322751322751},{"channel":"SMS","revenue":374491,"orders":71,"spend":60516.8,"aov":5274.521126760564,"roas":6.188215503793987},{"channel":"EDM","revenue":282090,"orders":56,"spend":5957.2,"aov":5037.321428571428,"roas":47.352783186732026}],"products":[{"name":"｜春｜白藜蘆醇飲 紙盒家庭號","short":"白藜蘆醇 家庭號","qty":"100包","daily":"1包","price":13625,"sale":11990},{"name":"健康訂閱制方案｜盛｜明日活力定 4盒組","short":"健康訂閱制 活力定 4盒組","qty":"4盒","daily":"2顆","price":9520,"sale":8378},{"name":"健康訂閱制方案｜全潤｜冰晶膠原凍 紙盒家庭號","short":"健康訂閱制 膠原凍 家庭號","qty":"100包","daily":"1包","price":6813,"sale":5995},{"name":"｜全潤｜冰晶膠原凍 紙盒家庭號","short":"膠原凍 家庭號","qty":"100包","daily":"1包","price":6813,"sale":5995},{"name":"｜捷｜核糖力捷凍 紙盒家庭號","short":"力捷凍 家庭號","qty":"100包","daily":"1包","price":6500,"sale":5720},{"name":"｜睿｜GABA睿智膏 紙盒家庭號","short":"睿智膏 家庭號","qty":"100包","daily":"1包","price":5600,"sale":4928},{"name":"健康訂閱制方案｜盛｜明日活力定 2盒組","short":"健康訂閱制 活力定 2盒組","qty":"2盒","daily":"2顆","price":4760,"sale":4522},{"name":"維生素果凍 紙盒家庭號","short":"維生素果凍 家庭號","qty":"100包","daily":"","price":4714,"sale":4148},{"name":"｜冠軍選手推薦｜進階雙膠突破包","short":"進階雙膠突破包","qty":"6盒","daily":"","price":4680,"sale":4212},{"name":"健康訂閱制方案｜明｜葉黃素果凍 紙盒家庭號","short":"健康訂閱制 葉黃素果凍 家庭號","qty":"100包","daily":"1包","price":4600,"sale":4048},{"name":"｜明｜葉黃素果凍 紙盒家庭號","short":"葉黃素果凍 家庭號","qty":"100包","daily":"1包","price":4600,"sale":4048},{"name":"｜冠軍選手推薦｜極限三膠突破包","short":"極限三膠突破包","qty":"6盒","daily":"","price":4560,"sale":4104}],"totals":{"revenue":8595504,"target":17016660,"orders":2121,"spend":897577.6399999999,"achievement":0.5051228619482319,"aov":4052.5714285714284,"roas":9.576334811549005},"source":{"months":["1月","2月","3月","4月","5月","6月"],"activitySheets":["2026活動成效紀錄","2025活動成效紀錄","2024活動成效紀錄","2023活動成效紀錄","週年慶成效紀錄"]}};
     var dashboardRendered = false;
-    function money(n) { return "$" + Math.round(n || 0).toLocaleString("zh-TW"); }
-    function intFmt(n) { return Math.round(n || 0).toLocaleString("zh-TW"); }
-    function pct(n) { return Math.round((n || 0) * 1000) / 10 + "%"; }
-    function svgBarChart(items, opts) {
-      var w = 680, h = 260, left = 128, right = 24, top = 16, barH = 22, gap = 10;
-      var max = Math.max.apply(null, items.map(function(i){ return i.value; })) || 1;
+    function money(value) {
+      return "NT$" + Math.round(Number(value || 0)).toLocaleString("zh-TW");
+    }
+    function intFmt(value) {
+      return Math.round(Number(value || 0)).toLocaleString("zh-TW");
+    }
+    function pct(value) {
+      var n = Number(value || 0);
+      if (n <= 1) n = n * 100;
+      return Math.round(n * 10) / 10 + "%";
+    }
+    function escapeHtml(value) {
+      return String(value == null ? "" : value).replace(/[&<>"]/g, function(ch) {
+        return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[ch] || ch;
+      });
+    }
+    function svgBarChart(items) {
+      var w = 680, left = 132, right = 40, top = 18, barH = 22, gap = 10;
+      var h = Math.max(250, top + items.length * (barH + gap) + 22);
+      var max = Math.max.apply(null, items.map(function(item) { return Number(item.value || 0); })) || 1;
       var rows = items.map(function(item, idx) {
         var y = top + idx * (barH + gap);
-        var bw = Math.max(2, (w - left - right) * item.value / max);
-        return "<text x="0" y="" + (y + 16) + "" font-size="13" fill="#665f55">" + item.label + "</text>" +
-          "<rect x="" + left + "" y="" + y + "" width="" + bw + "" height="" + barH + "" rx="5" fill="" + (item.color || "#c99b45") + ""></rect>" +
-          "<text x="" + (left + bw + 8) + "" y="" + (y + 16) + "" font-size="12" fill="#27231d">" + item.text + "</text>";
+        var value = Number(item.value || 0);
+        var bw = Math.max(4, (w - left - right) * value / max);
+        var label = escapeHtml(item.label);
+        var text = escapeHtml(item.text);
+        var color = item.color || "#c99b45";
+        return '<text x="0" y="' + (y + 16) + '" font-size="13" fill="#665f55">' + label + '</text>' +
+          '<rect x="' + left + '" y="' + y + '" width="' + bw + '" height="' + barH + '" rx="5" fill="' + color + '"></rect>' +
+          '<text x="' + (left + bw + 8) + '" y="' + (y + 16) + '" font-size="12" fill="#27231d">' + text + '</text>';
       }).join("");
-      return "<svg class="chart-svg" viewBox="0 0 " + w + " " + Math.max(h, top + items.length * (barH + gap) + 12) + "" role="img">" + rows + "</svg>";
+      return '<svg class="chart-svg" viewBox="0 0 ' + w + ' ' + h + '" role="img" aria-label="bar chart">' + rows + '</svg>';
     }
     function svgLineChart(series, labels) {
-      var w=680,h=260,p=38,max=Math.max.apply(null, series.flatMap(function(s){return s.values;}))||1;
-      var x=function(i){return p+i*((w-p*2)/(labels.length-1||1));}; var y=function(v){return h-p-(v/max)*(h-p*2);};
-      var grid=""; for(var g=0;g<4;g++){var gy=p+g*((h-p*2)/3);grid += "<line x1=""+p+"" y1=""+gy+"" x2=""+(w-p)+"" y2=""+gy+"" stroke="#eadfcd"/>";}
-      var lines=series.map(function(s){var pts=s.values.map(function(v,i){return x(i)+","+y(v);}).join(" ");var dots=s.values.map(function(v,i){return "<circle cx=""+x(i)+"" cy=""+y(v)+"" r="4" fill=""+s.color+""><title>"+s.name+" "+labels[i]+": "+intFmt(v)+"</title></circle>";}).join("");return "<polyline points=""+pts+"" fill="none" stroke=""+s.color+"" stroke-width="3"/>"+dots;}).join("");
-      var labelText=labels.map(function(l,i){return "<text x=""+x(i)+"" y=""+(h-10)+"" text-anchor="middle" font-size="12" fill="#665f55">"+l+"</text>";}).join("");
-      var legend=series.map(function(s,i){return "<circle cx=""+(p+i*120)+"" cy="16" r="5" fill=""+s.color+""></circle><text x=""+(p+10+i*120)+"" y="20" font-size="12" fill="#665f55">"+s.name+"</text>";}).join("");
-      return "<svg class="chart-svg" viewBox="0 0 "+w+" "+h+"">"+grid+legend+lines+labelText+"</svg>";
+      var w = 680, h = 260, p = 42;
+      var allValues = [];
+      series.forEach(function(s) { allValues = allValues.concat(s.values.map(function(v) { return Number(v || 0); })); });
+      var max = Math.max.apply(null, allValues) || 1;
+      var x = function(i) { return p + i * ((w - p * 2) / Math.max(1, labels.length - 1)); };
+      var y = function(v) { return h - p - (Number(v || 0) / max) * (h - p * 2); };
+      var grid = "";
+      for (var g = 0; g < 4; g++) {
+        var gy = p + g * ((h - p * 2) / 3);
+        grid += '<line x1="' + p + '" y1="' + gy + '" x2="' + (w - p) + '" y2="' + gy + '" stroke="#eadfcd" />';
+      }
+      var legend = series.map(function(s, i) {
+        var lx = p + i * 124;
+        return '<circle cx="' + lx + '" cy="16" r="5" fill="' + s.color + '"></circle>' +
+          '<text x="' + (lx + 10) + '" y="20" font-size="12" fill="#665f55">' + escapeHtml(s.name) + '</text>';
+      }).join("");
+      var lines = series.map(function(s) {
+        var pts = s.values.map(function(v, i) { return x(i) + ',' + y(v); }).join(' ');
+        var dots = s.values.map(function(v, i) {
+          return '<circle cx="' + x(i) + '" cy="' + y(v) + '" r="4" fill="' + s.color + '"><title>' + escapeHtml(s.name + ' ' + labels[i] + ': ' + intFmt(v)) + '</title></circle>';
+        }).join("");
+        return '<polyline points="' + pts + '" fill="none" stroke="' + s.color + '" stroke-width="3" />' + dots;
+      }).join("");
+      var labelText = labels.map(function(label, i) {
+        return '<text x="' + x(i) + '" y="' + (h - 10) + '" text-anchor="middle" font-size="12" fill="#665f55">' + escapeHtml(label) + '</text>';
+      }).join("");
+      return '<svg class="chart-svg" viewBox="0 0 ' + w + ' ' + h + '" role="img" aria-label="line chart">' + grid + legend + lines + labelText + '</svg>';
     }
     function renderDashboard() {
-      if (dashboardRendered) return; dashboardRendered = true;
-      var d = DASHBOARD_DATA, t = d.totals;
-      document.getElementById("dashboardMetrics").innerHTML = [
-        ["累積營收", money(t.revenue)], ["達標率", pct(t.achievement)], ["訂單數", intFmt(t.orders)], ["整體 ROAS", Math.round(t.roas*10)/10]
-      ].map(function(m){ return "<div class="metric-card"><span>"+m[0]+"</span><strong>"+m[1]+"</strong></div>"; }).join("");
-      var labels = d.monthly.map(function(m){return m.month;});
-      document.getElementById("monthlyRevenueChart").innerHTML = svgLineChart([
-        {name:"實際業績", color:"#c99b45", values:d.monthly.map(function(m){return m.revenue;})},
-        {name:"業績目標", color:"#748a72", values:d.monthly.map(function(m){return m.target;})}
-      ], labels);
-      document.getElementById("channelRevenueChart").innerHTML = svgBarChart(d.channels.slice(0,8).map(function(c,i){return {label:c.channel, value:c.revenue, text:money(c.revenue), color:i<3?"#c99b45":"#748a72"};}));
-      document.getElementById("productPriceChart").innerHTML = svgBarChart(d.products.slice(0,10).map(function(p,i){return {label:p.short, value:p.sale || p.price, text:money(p.sale || p.price), color:i<3?"#7a5a20":"#c99b45"};}));
-      document.getElementById("efficiencyChart").innerHTML = svgLineChart([
-        {name:"訂單數", color:"#c99b45", values:d.monthly.map(function(m){return m.orders;})},
-        {name:"ROAS x10", color:"#748a72", values:d.monthly.map(function(m){return m.roas*10;})},
-        {name:"AOV /100", color:"#7a5a20", values:d.monthly.map(function(m){return m.aov/100;})}
-      ], labels);
-      document.getElementById("channelTable").innerHTML = "<table class="dashboard-table"><thead><tr><th>通路</th><th>營收</th><th>訂單</th><th>花費</th><th>ROAS</th></tr></thead><tbody>" + d.channels.map(function(c){return "<tr><td>"+c.channel+"</td><td>"+money(c.revenue)+"</td><td>"+intFmt(c.orders)+"</td><td>"+money(c.spend)+"</td><td>"+(c.spend?Math.round(c.roas*10)/10:"-")+"</td></tr>";}).join("") + "</tbody></table>";
+      if (dashboardRendered) return;
+      try {
+        var d = DASHBOARD_DATA;
+        var t = d.totals || {};
+        document.getElementById("dashboardMetrics").innerHTML = [
+          ["累積營收", money(t.revenue)],
+          ["達標率", pct(t.achievement)],
+          ["訂單數", intFmt(t.orders)],
+          ["整體 ROAS", Math.round(Number(t.roas || 0) * 10) / 10]
+        ].map(function(m) { return '<div class="metric-card"><span>' + m[0] + '</span><strong>' + m[1] + '</strong></div>'; }).join("");
+        var labels = d.monthly.map(function(m) { return m.month; });
+        document.getElementById("monthlyRevenueChart").innerHTML = svgLineChart([
+          {name:"實際業績", color:"#c99b45", values:d.monthly.map(function(m){return m.revenue;})},
+          {name:"業績目標", color:"#748a72", values:d.monthly.map(function(m){return m.target;})}
+        ], labels);
+        document.getElementById("channelRevenueChart").innerHTML = svgBarChart(d.channels.slice(0, 8).map(function(c, i) {
+          return {label:c.channel, value:c.revenue, text:money(c.revenue), color:i < 3 ? "#c99b45" : "#748a72"};
+        }));
+        document.getElementById("productPriceChart").innerHTML = svgBarChart(d.products.slice(0, 10).map(function(p, i) {
+          return {label:p.short, value:p.sale || p.price, text:money(p.sale || p.price), color:i < 3 ? "#7a5a20" : "#c99b45"};
+        }));
+        document.getElementById("efficiencyChart").innerHTML = svgLineChart([
+          {name:"訂單數", color:"#c99b45", values:d.monthly.map(function(m){return m.orders;})},
+          {name:"ROAS x10", color:"#748a72", values:d.monthly.map(function(m){return m.roas * 10;})},
+          {name:"AOV /100", color:"#7a5a20", values:d.monthly.map(function(m){return m.aov / 100;})}
+        ], labels);
+        document.getElementById("channelTable").innerHTML = '<table class="dashboard-table"><thead><tr><th>通路</th><th>營收</th><th>訂單</th><th>花費</th><th>ROAS</th></tr></thead><tbody>' + d.channels.map(function(c) {
+          return '<tr><td>' + escapeHtml(c.channel) + '</td><td>' + money(c.revenue) + '</td><td>' + intFmt(c.orders) + '</td><td>' + money(c.spend) + '</td><td>' + (c.spend ? Math.round(c.roas * 10) / 10 : '-') + '</td></tr>';
+        }).join("") + '</tbody></table>';
+        dashboardRendered = true;
+      } catch (error) {
+        var area = document.getElementById("dashboardMetrics");
+        if (area) area.innerHTML = '<div class="metric-card"><span>資料載入狀態</span><strong>圖表暫時無法顯示</strong></div>';
+        console.error("Dashboard render failed", error);
+      }
+    }
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", renderDashboard);
+    } else {
+      renderDashboard();
     }
   </script>
   <script>
