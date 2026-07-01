@@ -193,35 +193,32 @@
       <div class="page-view" id="ads-page">
       <section class="subpage-head">
         <h1 style="font-size:clamp(38px,5vw,64px);line-height:1.05">廣告圖生成</h1>
-        <p>這是不用 API Key、打開就能用的快速作圖頁。上傳產品照、填入文案與風格，就能直接合成「帶文案的廣告行銷圖」或「商品棚拍情境圖」，並下載 PNG。</p>
+        <p>免費可用的 GA 黃金甲行銷製圖器。上傳產品照、選版型、套文案與尺寸，就能直接輸出社群貼文、限動、LINE 圖文與活動橫幅。</p>
       </section>
       <section class="section" id="ad-generator">
         <div class="generator-grid">
           <div class="generator-card">
             <h2>作圖設定</h2>
-            <div class="field"><label>生成方式</label><div class="segmented" role="group" aria-label="生成方式"><button type="button" class="active" data-maker-mode="canvas">快速排版</button><button type="button" data-maker-mode="ai">AI 生成照片</button></div><p class="key-note">快速排版可直接下載；AI 生成照片會呼叫安全後端，需部署 Vercel 並設定 OPENAI_API_KEY。</p></div>
             <div class="generator-form">
-              <div class="field"><label>圖片類型</label><div class="segmented" role="group" aria-label="圖片類型"><button type="button" class="active" data-ad-mode="ad">帶文案廣告圖</button><button type="button" data-ad-mode="scene">商品棚拍情境圖</button></div></div>
-              <div class="field"><label for="adLayoutMode">上傳圖片類型</label><select id="adLayoutMode"><option value="product">產品去背照 / 商品照，套新版型</option><option value="poster">已完成廣告圖，只做美化展示</option><option value="clean">產品照，簡潔不疊大字</option></select><p class="key-note">如果上傳的是已經有文案的廣告圖，請選「已完成廣告圖」，避免文字重疊。</p></div>
-              <div class="field"><label for="productPhoto">產品照片</label><div class="file-drop" id="productDrop"><input id="productPhoto" type="file" accept="image/png,image/jpeg,image/webp"><span>點擊上傳產品照<br>建議使用清楚、背景單純的商品照片</span><img id="productPreview" alt="產品照片預覽"></div></div>
-              <div class="field-row"><div class="field"><label for="adProductName">產品名稱</label><input id="adProductName" value="GA黃金甲保健產品" placeholder="例如：白藜蘆醇飲"></div><div class="field"><label for="adAudience">目標客群</label><input id="adAudience" value="重視健康、想日常保養的會員" placeholder="例如：熟齡女性、家庭照護者"></div></div>
-              <div class="field"><label for="adCopy">主標語</label><input id="adCopy" value="把日常保養，變成被好好照顧的習慣" placeholder="例如：給每天努力的你，一份溫柔保養"></div>
-              <div class="field"><label for="adSubCopy">副標 / 補充說明</label><textarea id="adSubCopy" placeholder="例如：日常保養、方便飲用、建立穩定照顧節奏">日常健康保養、方便飲用，適合想建立穩定保養習慣的消費者。</textarea></div>
-              <div class="field-row"><div class="field"><label for="adStyle">視覺風格</label><select id="adStyle"><option>溫暖高級感</option><option>乾淨棚拍</option><option>自然生活感</option><option>節慶活動感</option><option>社群貼文感</option></select></div><div class="field"><label for="adTheme">主色系</label><select id="adTheme"><option value="gold">品牌金</option><option value="green">草本綠</option><option value="rose">溫柔玫瑰</option><option value="blue">清爽藍</option><option value="charcoal">高級黑金</option></select></div></div>
-              <div class="field-row"><div class="field"><label for="adSize">圖片比例</label><select id="adSize"><option value="1080x1080">方形 1:1</option><option value="1080x1350">社群直式 4:5</option><option value="1080x1920">限動 9:16</option><option value="1600x900">橫式 16:9</option></select></div><div class="field"><label for="adCta">CTA 按鈕文字</label><input id="adCta" value="了解更多" placeholder="例如：立即諮詢、查看方案"></div></div>
-              <div class="field-row"><div class="field"><label for="productScale">商品大小</label><input id="productScale" type="range" min="42" max="88" value="66"></div><div class="field"><label for="textScale">文字大小</label><input id="textScale" type="range" min="80" max="125" value="100"></div></div>
-              <div class="field" id="tempKeyField" style="display:none"><label for="tempOpenAiKey">臨時測試 OpenAI API Key</label><input id="tempOpenAiKey" type="password" autocomplete="off" placeholder="只在這次瀏覽器使用，不會寫進網站"><p class="key-note">臨時測試用：Key 只存在目前頁面記憶體，重新整理就消失。正式公開使用仍建議改 Vercel 後端。</p></div>
-              <div class="field" id="aiBackendField" style="display:none"><label for="aiBackendUrl">AI 後端網址</label><input id="aiBackendUrl" type="url" placeholder="可選：例如 https://你的-vercel 網址；留空則用上方臨時 Key 直接測"><p class="key-note">如果瀏覽器直接呼叫 OpenAI 被擋，請改用 Vercel 後端網址。</p></div>
-              <div class="field" id="aiPhotoStyleField" style="display:none"><label for="aiPhotoStyle">AI 照片描述</label><textarea id="aiPhotoStyle" placeholder="描述你想要的廣告照片情境">生成一張可用於社群貼文的高級保健食品廣告照片：產品放在乾淨明亮的桌面上，柔和自然光，背景有健康生活感，不要醫療宣稱，畫面留白可放文案。</textarea></div>
-              <div class="generator-actions"><button class="button" type="button" id="sampleAdData">一鍵範例</button><button class="button primary" type="button" id="renderAdImage">立即合成圖片</button><button class="button" type="button" id="optimizeAiPrompt" style="display:none">AI 優化提示詞</button><button class="button primary" type="button" id="generateAiPhoto" style="display:none">AI 生成照片</button></div>
-              <p class="api-status" id="adApiStatus">狀態：可直接作圖，不需 OpenAI API Key。</p>
+              <div class="field"><label for="adTemplate">版型庫</label><select id="adTemplate"><option value="launch">新品上市</option><option value="member">會員關懷</option><option value="promo">限時優惠</option><option value="line">LINE 圖文</option><option value="story">IG 限動</option><option value="scene">商品棚拍</option><option value="poster">已完成廣告圖展示</option></select></div>
+              <div class="field"><label for="productPhoto">產品照片</label><div class="file-drop" id="productDrop"><input id="productPhoto" type="file" accept="image/png,image/jpeg,image/webp"><span>點擊上傳產品照<br>單品照、包裝照或已完成廣告圖都可以</span><img id="productPreview" alt="產品照片預覽"></div></div>
+              <div class="field-row"><div class="field"><label for="adProductName">產品名稱</label><input id="adProductName" value="GA黃金甲保健產品" placeholder="例如：白藜蘆醇飲"></div><div class="field"><label for="adAudience">目標客群</label><input id="adAudience" value="重視健康、想日常保養的會員" placeholder="例如：VIP會員、熟齡女性、家庭照護者"></div></div>
+              <div class="field-row"><div class="field"><label for="adOffer">活動 / 優惠</label><input id="adOffer" value="會員限定關懷活動" placeholder="例如：新品上市、限時 88 折、生日禮"></div><div class="field"><label for="adCta">CTA</label><input id="adCta" value="了解更多" placeholder="例如：立即諮詢、查看方案"></div></div>
+              <div class="field"><label for="adCopy">主標語</label><input id="adCopy" value="把日常保養，變成被好好照顧的習慣"></div>
+              <div class="field"><label for="adSubCopy">副標 / 補充說明</label><textarea id="adSubCopy">日常健康保養、方便飲用，適合想建立穩定保養習慣的消費者。</textarea></div>
+              <div class="field-row"><div class="field"><label for="adTheme">主色系</label><select id="adTheme"><option value="gold">品牌金</option><option value="green">草本綠</option><option value="rose">溫柔玫瑰</option><option value="blue">清爽藍</option><option value="charcoal">高級黑金</option></select></div><div class="field"><label for="adSize">輸出尺寸</label><select id="adSize"><option value="1080x1080">IG 方形 1080x1080</option><option value="1080x1350">IG 直式 1080x1350</option><option value="1080x1920">限動 1080x1920</option><option value="1040x1040">LINE 圖文 1040x1040</option><option value="1600x900">橫幅 1600x900</option></select></div></div>
+              <div class="field-row"><div class="field"><label for="productScale">商品大小</label><input id="productScale" type="range" min="38" max="92" value="66"></div><div class="field"><label for="textScale">文字大小</label><input id="textScale" type="range" min="78" max="128" value="100"></div></div>
+              <div class="generator-actions"><button class="button" type="button" id="sampleAdData">一鍵範例</button><button class="button" type="button" id="autoCopyButton">自動產文案</button><button class="button primary" type="button" id="renderAdImage">立即合成圖片</button></div>
+              <div class="generator-actions"><button class="button" type="button" id="downloadAllSizes">一鍵下載多尺寸</button><button class="button" type="button" id="copyPostText">複製貼文文案</button></div>
+              <p class="api-status" id="adApiStatus">狀態：免費製圖模式，不需 API Key。</p>
             </div>
           </div>
           <div class="generator-card">
             <h2>圖片預覽</h2>
-            <div class="canvas-shell"><canvas id="adCanvas" width="1080" height="1080" aria-label="廣告圖預覽"></canvas><div class="image-placeholder" id="aiPhotoResult" style="display:none">AI 生成照片會顯示在這裡。</div></div>
-            <div class="download-row"><button class="button" type="button" id="copyAdPrompt">複製 AI 提示詞</button><a class="button primary" id="downloadAdImage" href="#" download="maddy-ad-image.png">下載 PNG</a></div>
-            <div class="prompt-preview" id="adPromptPreview">提示詞會依你的設定自動整理，可複製給 AI 做更進階的圖片生成。</div>
+            <div class="canvas-shell"><canvas id="adCanvas" width="1080" height="1080" aria-label="廣告圖預覽"></canvas></div>
+            <div class="download-row"><a class="button primary" id="downloadAdImage" href="#" download="ga-ad-image.png">下載目前尺寸 PNG</a></div>
+            <h3 style="margin-top:20px">文案建議與風險檢查</h3>
+            <div class="prompt-preview" id="adPromptPreview">系統會依版型自動整理貼文文案與禁用語提醒。</div>
           </div>
         </div>
       </section>
@@ -397,7 +394,7 @@
 
   <script>
     function initAdGenerator() {
-      var state = { mode: "ad", makerMode: "canvas", image: null, imageUrl: "" };
+      var state = { image: null, imageUrl: "" };
       var q = function(id) { return document.getElementById(id); };
       var canvas = q("adCanvas");
       if (!canvas) return;
@@ -409,379 +406,53 @@
         blue: { bg1: "#f1f8fb", bg2: "#c7dce6", ink: "#16242a", muted: "#58717c", accent: "#5c91a8", deep: "#203b48" },
         charcoal: { bg1: "#2d2a22", bg2: "#0f0e0b", ink: "#fff8ea", muted: "#e0d0ad", accent: "#d4aa55", deep: "#090806" }
       };
-      function status(text) { var el = q("adApiStatus"); if (el) el.textContent = "狀態：" + text; }
-      function setMakerMode(mode) {
-        state.makerMode = mode;
-        document.querySelectorAll("[data-maker-mode]").forEach(function(btn) { btn.classList.toggle("active", btn.getAttribute("data-maker-mode") === mode); });
-        var isAi = mode === "ai";
-        ["tempKeyField", "aiBackendField", "aiPhotoStyleField"].forEach(function(id) { var el = q(id); if (el) el.style.display = isAi ? "block" : "none"; });
-        q("generateAiPhoto").style.display = isAi ? "inline-flex" : "none";
-        q("optimizeAiPrompt").style.display = isAi ? "inline-flex" : "none";
-        q("renderAdImage").style.display = isAi ? "none" : "inline-flex";
-        q("adCanvas").style.display = isAi ? "none" : "block";
-        q("aiPhotoResult").style.display = isAi ? "grid" : "none";
-        status(isAi ? "AI 模式會先優化提示詞，再呼叫安全後端生圖；GitHub Pages 需填 Vercel 後端網址。" : "可直接作圖，不需 OpenAI API Key。");
-        if (isAi && isGithubPagesWithoutBackend()) renderAiBlockedMessage("你現在開的是 GitHub Pages 靜態網站，這裡沒有後端可以保護 OpenAI API Key。");
-      }
-      function aiBaseUrl() {
-        var custom = q("aiBackendUrl") ? q("aiBackendUrl").value.trim().replace(/\/$/, "") : "";
-        return custom || "";
-      }
-      function tempOpenAiKey() {
-        return q("tempOpenAiKey") ? q("tempOpenAiKey").value.trim() : "";
-      }
-      async function optimizePromptDirectly(key) {
-        var prompt = [
-          "你是 GA黃金甲的品牌行銷視覺企劃。請把使用者輸入改寫成適合圖片生成模型的繁體中文提示詞。",
-          "請回傳一段完整提示詞，不要 Markdown，不要解釋。",
-          "產品名稱：" + (q("adProductName").value || "GA黃金甲產品"),
-          "目標客群：" + (q("adAudience").value || "重視健康的會員"),
-          "主標語：" + (q("adCopy").value || ""),
-          "副標：" + (q("adSubCopy").value || ""),
-          "使用者風格描述：" + (q("aiPhotoStyle").value || ""),
-          "限制：不要醫療宣稱，不要誇大療效，產品包裝需保留辨識度，畫面可用於社群廣告或貼文。"
-        ].join("\n");
-        var response = await fetch("https://api.openai.com/v1/responses", {
-          method: "POST",
-          headers: { "Authorization": "Bearer " + key, "Content-Type": "application/json" },
-          body: JSON.stringify({ model: "gpt-4.1-mini", input: prompt, temperature: 0.5 })
-        });
-        var data = await response.json().catch(function() { return {}; });
-        if (!response.ok) throw new Error((data.error && data.error.message) || "OpenAI 文案優化失敗");
-        return data.output_text || ((data.output || []).map(function(item) { return (item.content || []).map(function(part) { return part.text || ""; }).join(""); }).join(""));
-      }
-      async function generateImageDirectly(key, file) {
-        var form = new FormData();
-        form.append("model", "gpt-image-1");
-        form.append("prompt", buildAiPrompt());
-        form.append("image", file, file.name || "product.png");
-        form.append("size", q("adSize").value === "1080x1920" ? "1024x1536" : q("adSize").value === "1600x900" ? "1536x1024" : "1024x1024");
-        form.append("quality", "medium");
-        var response = await fetch("https://api.openai.com/v1/images/edits", {
-          method: "POST",
-          headers: { "Authorization": "Bearer " + key },
-          body: form
-        });
-        var data = await response.json().catch(function() { return {}; });
-        if (!response.ok) throw new Error((data.error && data.error.message) || "OpenAI 圖片生成失敗");
-        var item = data.data && data.data[0];
-        return (item && item.url) || (item && item.b64_json ? "data:image/png;base64," + item.b64_json : "");
-      }
-      function readFileAsDataUrl(file) {
-        return new Promise(function(resolve, reject) {
-          var reader = new FileReader();
-          reader.onload = function() { resolve(reader.result); };
-          reader.onerror = reject;
-          reader.readAsDataURL(file);
-        });
-      }
-      function renderAiBlockedMessage(message) {
-        q("aiPhotoResult").style.display = "grid";
-        q("aiPhotoResult").innerHTML = '<div class="image-placeholder"><strong>目前還不能直接產圖</strong><br>' + message + '<br><br>需要把這個 repo 接到 Vercel，並在 Vercel 設定 OPENAI_API_KEY，AI 圖片才會真的生成。</div>';
-      }
-      function isGithubPagesWithoutBackend() {
-        return location.hostname.indexOf('github.io') >= 0 && !q("aiBackendUrl").value.trim();
-      }
-      function buildAiPrompt() {
-        return [
-          q("aiPhotoStyle").value || "生成一張可用於社群貼文的高級商品廣告照片。",
-          "產品名稱：" + (q("adProductName").value || "GA黃金甲產品"),
-          "目標客群：" + (q("adAudience").value || "重視健康的會員"),
-          "主標語方向：" + (q("adCopy").value || ""),
-          "副標方向：" + (q("adSubCopy").value || ""),
-          "圖片類型：" + (state.mode === "ad" ? "可用於廣告或貼文的情境照片" : "商品棚拍情境照片"),
-          "要求：產品外觀需保留辨識度；不要醫療宣稱；不要誇大療效；不要亂加不存在的品牌字樣；畫面要可商用、乾淨、高級。"
-        ].join("\n");
-      }
+      var templateCopy = {
+        launch: { title: "新品上市", copy: "把日常保養，變成被好好照顧的習慣", sub: "新一季健康保養提案，陪你建立穩定、安心的日常節奏。", cta: "查看新品" },
+        member: { title: "會員關懷", copy: "給每天努力的你，一份溫柔保養", sub: "會員專屬關懷，從日常使用提醒到保養建議，都希望你感受到品牌的陪伴。", cta: "領取關懷" },
+        promo: { title: "限時優惠", copy: "趁現在，把健康保養準備好", sub: "精選方案限時開放，適合想補貨、入門或送禮的你。", cta: "立即選購" },
+        line: { title: "LINE 圖文", copy: "今天也記得好好照顧自己", sub: "把保養放進生活裡，每天一點點，慢慢累積安心感。", cta: "點我了解" },
+        story: { title: "限動互動", copy: "你的日常保養，今天完成了嗎？", sub: "用簡單的小習慣，陪自己穩穩往更好的狀態前進。", cta: "滑動查看" },
+        scene: { title: "商品棚拍", copy: "乾淨日常，剛剛好的保養感", sub: "商品清楚、畫面留白，適合品牌形象與產品介紹。", cta: "了解產品" },
+        poster: { title: "素材展示", copy: "品牌素材展示", sub: "已完成廣告圖只做美化展示，不再疊加文字。", cta: "下載素材" }
+      };
+      var banned = ["治療", "療效", "治癒", "保證", "根治", "改善疾病", "醫療級", "最有效", "立即見效"];
+      function status(text) { q("adApiStatus").textContent = "狀態：" + text; }
       function readSize() { var parts = q("adSize").value.split("x").map(Number); return { w: parts[0], h: parts[1] }; }
-      function wrapText(text, maxWidth, font) {
-        ctx.font = font;
-        var chars = String(text || "").split("");
-        var lines = [], line = "";
-        chars.forEach(function(ch) {
-          var test = line + ch;
-          if (ctx.measureText(test).width > maxWidth && line) { lines.push(line); line = ch; }
-          else { line = test; }
-        });
-        if (line) lines.push(line);
-        return lines;
+      function roundedRect(x, y, w, h, r) { ctx.beginPath(); ctx.moveTo(x+r,y); ctx.lineTo(x+w-r,y); ctx.quadraticCurveTo(x+w,y,x+w,y+r); ctx.lineTo(x+w,y+h-r); ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h); ctx.lineTo(x+r,y+h); ctx.quadraticCurveTo(x,y+h,x,y+h-r); ctx.lineTo(x,y+r); ctx.quadraticCurveTo(x,y,x+r,y); ctx.closePath(); }
+      function wrapText(text, maxWidth, font) { ctx.font = font; var chars = String(text || "").split(""); var lines = [], line = ""; chars.forEach(function(ch){ var test = line + ch; if (ctx.measureText(test).width > maxWidth && line) { lines.push(line); line = ch; } else line = test; }); if (line) lines.push(line); return lines; }
+      function drawBackground(p, w, h) { var g = ctx.createLinearGradient(0,0,w,h); g.addColorStop(0,p.bg1); g.addColorStop(1,p.bg2); ctx.fillStyle = g; ctx.fillRect(0,0,w,h); ctx.globalAlpha=.14; ctx.fillStyle=p.accent; ctx.beginPath(); ctx.arc(w*.87,h*.18,Math.min(w,h)*.24,0,Math.PI*2); ctx.fill(); ctx.beginPath(); ctx.arc(w*.15,h*.87,Math.min(w,h)*.27,0,Math.PI*2); ctx.fill(); ctx.globalAlpha=1; }
+      function containRect(img, x, y, w, h) { var r = Math.min(w/img.width, h/img.height); var iw = img.width*r, ih = img.height*r; return {x:x+(w-iw)/2,y:y+(h-ih)/2,w:iw,h:ih}; }
+      function drawImageCard(img, p, w, h, mode) {
+        if (!img) { ctx.fillStyle="rgba(255,255,255,.72)"; roundedRect(w*.32,h*.32,w*.36,h*.28,28); ctx.fill(); ctx.fillStyle=p.muted; ctx.font="700 "+Math.round(w*.026)+"px Arial, sans-serif"; ctx.textAlign="center"; ctx.fillText("上傳產品照後產生預覽",w*.5,h*.47); ctx.textAlign="left"; return; }
+        if (mode === "poster") { var pad=Math.min(w,h)*.075; var box={x:pad,y:pad,w:w-pad*2,h:h-pad*2}; ctx.save(); ctx.shadowColor="rgba(48,37,20,.24)"; ctx.shadowBlur=42; ctx.shadowOffsetY=24; roundedRect(box.x,box.y,box.w,box.h,Math.min(w,h)*.028); ctx.fillStyle="rgba(255,255,255,.72)"; ctx.fill(); var rr=containRect(img,box.x+pad*.35,box.y+pad*.35,box.w-pad*.7,box.h-pad*.7); ctx.drawImage(img,rr.x,rr.y,rr.w,rr.h); ctx.restore(); return; }
+        var scale=Number(q("productScale").value||66)/100; var areaW=w*(mode==="scene"?.56:.36); var areaH=h*(mode==="scene"?.58:.5); var r=Math.min(areaW/img.width,areaH/img.height)*scale/.66; var iw=img.width*r, ih=img.height*r; var x=(mode==="scene"?w*.5:w*.69)-iw/2; var y=(mode==="scene"?h*.48:h*.43)-ih/2; ctx.save(); ctx.shadowColor="rgba(48,37,20,.25)"; ctx.shadowBlur=36; ctx.shadowOffsetY=24; roundedRect(x-w*.018,y-h*.018,iw+w*.036,ih+h*.036,26); ctx.fillStyle="rgba(255,255,255,.3)"; ctx.fill(); ctx.drawImage(img,x,y,iw,ih); ctx.restore(); ctx.globalAlpha=.15; ctx.fillStyle=p.deep; ctx.beginPath(); ctx.ellipse(x+iw/2,y+ih+h*.035,iw*.36,Math.max(10,h*.016),0,0,Math.PI*2); ctx.fill(); ctx.globalAlpha=1;
       }
-      function roundedRect(x, y, w, h, r) {
-        ctx.beginPath();
-        ctx.moveTo(x + r, y);
-        ctx.lineTo(x + w - r, y);
-        ctx.quadraticCurveTo(x + w, y, x + w, y + r);
-        ctx.lineTo(x + w, y + h - r);
-        ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
-        ctx.lineTo(x + r, y + h);
-        ctx.quadraticCurveTo(x, y + h, x, y + h - r);
-        ctx.lineTo(x, y + r);
-        ctx.quadraticCurveTo(x, y, x + r, y);
-        ctx.closePath();
-      }
-      function drawBackground(p, w, h) {
-        var g = ctx.createLinearGradient(0, 0, w, h);
-        g.addColorStop(0, p.bg1); g.addColorStop(1, p.bg2);
-        ctx.fillStyle = g; ctx.fillRect(0, 0, w, h);
-        ctx.globalAlpha = .16;
-        ctx.fillStyle = p.accent;
-        ctx.beginPath(); ctx.arc(w * .88, h * .18, Math.min(w, h) * .24, 0, Math.PI * 2); ctx.fill();
-        ctx.beginPath(); ctx.arc(w * .16, h * .86, Math.min(w, h) * .28, 0, Math.PI * 2); ctx.fill();
-        ctx.globalAlpha = 1;
-      }
-      function containRect(img, boxX, boxY, boxW, boxH) {
-        var ratio = Math.min(boxW / img.width, boxH / img.height);
-        var iw = img.width * ratio, ih = img.height * ratio;
-        return { x: boxX + (boxW - iw) / 2, y: boxY + (boxH - ih) / 2, w: iw, h: ih };
-      }
-      function coverRect(img, boxX, boxY, boxW, boxH) {
-        var ratio = Math.max(boxW / img.width, boxH / img.height);
-        var sw = boxW / ratio, sh = boxH / ratio;
-        var sx = (img.width - sw) / 2, sy = (img.height - sh) / 2;
-        return { sx: sx, sy: sy, sw: sw, sh: sh, x: boxX, y: boxY, w: boxW, h: boxH };
-      }
-      function drawUploadedPoster(img, p, w, h) {
-        var pad = Math.min(w, h) * .075;
-        var boxX = pad, boxY = pad, boxW = w - pad * 2, boxH = h - pad * 2;
-        ctx.save();
-        ctx.shadowColor = "rgba(48,37,20,.24)"; ctx.shadowBlur = 42; ctx.shadowOffsetY = 24;
-        roundedRect(boxX, boxY, boxW, boxH, Math.min(w,h)*.028); ctx.fillStyle = "rgba(255,255,255,.72)"; ctx.fill();
-        var r = containRect(img, boxX + pad*.35, boxY + pad*.35, boxW - pad*.7, boxH - pad*.7);
-        ctx.drawImage(img, r.x, r.y, r.w, r.h);
-        ctx.restore();
-        ctx.fillStyle = p.muted; ctx.globalAlpha = .82; ctx.font = "700 " + Math.round(w*.017) + "px Arial, sans-serif";
-        ctx.fillText("GA黃金甲 / 素材展示", pad, h - pad*.38); ctx.globalAlpha = 1;
-      }
-      function drawProduct(img, p, w, h) {
-        var mode = q("adLayoutMode") ? q("adLayoutMode").value : "product";
-        if (mode === "poster") { drawUploadedPoster(img, p, w, h); return; }
-        var scale = Number(q("productScale").value || 66) / 100;
-        var areaW = state.mode === "ad" ? w * .34 : w * .54;
-        var areaH = state.mode === "ad" ? h * .48 : h * .55;
-        if (mode === "clean") { areaW = w * .48; areaH = h * .56; }
-        var maxW = areaW * scale / .66;
-        var maxH = areaH * scale / .66;
-        var ratio = Math.min(maxW / img.width, maxH / img.height);
-        var iw = img.width * ratio, ih = img.height * ratio;
-        var x = state.mode === "ad" ? w * .68 - iw / 2 : w * .5 - iw / 2;
-        var y = state.mode === "ad" ? h * .43 - ih / 2 : h * .46 - ih / 2;
-        if (mode === "clean") { x = w * .5 - iw / 2; y = h * .43 - ih / 2; }
-        ctx.save();
-        ctx.shadowColor = "rgba(48,37,20,.24)"; ctx.shadowBlur = 34; ctx.shadowOffsetY = 24;
-        roundedRect(x - w*.018, y - h*.018, iw + w*.036, ih + h*.036, 26); ctx.fillStyle = "rgba(255,255,255,.26)"; ctx.fill();
-        ctx.drawImage(img, x, y, iw, ih);
-        ctx.restore();
-        ctx.save();
-        ctx.globalAlpha = .16; ctx.fillStyle = p.deep;
-        ctx.beginPath(); ctx.ellipse(x + iw/2, y + ih + h*.035, iw*.36, Math.max(10, h*.016), 0, 0, Math.PI*2); ctx.fill();
-        ctx.restore();
-      }
-      function drawAdText(p, w, h) {
-        var mode = q("adLayoutMode") ? q("adLayoutMode").value : "product";
+      function drawText(p,w,h,mode) {
         if (mode === "poster") return;
-        var s = Number(q("textScale").value || 100) / 100;
-        var left = w * .075, top = h * .14, maxW = mode === "clean" ? w * .72 : w * .43;
-        ctx.fillStyle = p.accent; ctx.font = "800 " + Math.round(w*.022*s) + "px Arial, sans-serif";
-        ctx.fillText(q("adProductName").value || "GA黃金甲", left, top);
-        if (mode !== "clean") {
-          var titleLines = wrapText(q("adCopy").value, maxW, "900 " + Math.round(w*.048*s) + "px Arial, sans-serif").slice(0, 3);
-          ctx.fillStyle = p.ink; ctx.font = "900 " + Math.round(w*.048*s) + "px Arial, sans-serif";
-          titleLines.forEach(function(line, i) { ctx.fillText(line, left, top + w*.075 + i*w*.06*s); });
-          var subY = top + w*.095 + titleLines.length*w*.06*s;
-          var subLines = wrapText(q("adSubCopy").value, maxW, "500 " + Math.round(w*.022*s) + "px Arial, sans-serif").slice(0, 3);
-          ctx.fillStyle = p.muted; ctx.font = "500 " + Math.round(w*.022*s) + "px Arial, sans-serif";
-          subLines.forEach(function(line, i) { ctx.fillText(line, left, subY + i*w*.035*s); });
-          var cta = q("adCta").value || "了解更多";
-          var by = Math.min(h - w*.15, subY + subLines.length*w*.04*s + w*.04);
-          ctx.fillStyle = p.accent; roundedRect(left, by, Math.max(w*.17, ctx.measureText(cta).width + w*.065), w*.06, w*.03); ctx.fill();
-          ctx.fillStyle = p.deep === "#090806" ? "#16130d" : "#fffdf7"; ctx.font = "900 " + Math.round(w*.022*s) + "px Arial, sans-serif";
-          ctx.fillText(cta, left + w*.032, by + w*.04);
-        } else {
-          ctx.fillStyle = p.muted; ctx.font = "600 " + Math.round(w*.022*s) + "px Arial, sans-serif";
-          wrapText(q("adSubCopy").value, maxW, ctx.font).slice(0, 2).forEach(function(line, i) { ctx.fillText(line, left, top + w*.055 + i*w*.036*s); });
-        }
+        var s=Number(q("textScale").value||100)/100; var left=w*.075, top=h*.13, maxW=mode==="scene"?w*.8:w*.43; var title=q("adCopy").value, sub=q("adSubCopy").value;
+        ctx.fillStyle=p.accent; ctx.font="800 "+Math.round(w*.021*s)+"px Arial, sans-serif"; ctx.fillText((templateCopy[mode]||templateCopy.launch).title+" | "+(q("adProductName").value||"GA黃金甲"),left,top);
+        if (mode === "scene") { ctx.textAlign="center"; ctx.fillStyle=p.ink; ctx.font="900 "+Math.round(w*.037*s)+"px Arial, sans-serif"; ctx.fillText(q("adProductName").value||"GA黃金甲",w*.5,h*.13); ctx.fillStyle=p.muted; ctx.font="500 "+Math.round(w*.019*s)+"px Arial, sans-serif"; ctx.fillText(sub,w*.5,h*.165); ctx.textAlign="left"; return; }
+        var titleFont="900 "+Math.round(w*.048*s)+"px Arial, sans-serif"; ctx.fillStyle=p.ink; ctx.font=titleFont; var titleLines=wrapText(title,maxW,titleFont).slice(0,3); titleLines.forEach(function(line,i){ctx.fillText(line,left,top+w*.075+i*w*.058*s);});
+        var subY=top+w*.095+titleLines.length*w*.058*s; var subFont="500 "+Math.round(w*.022*s)+"px Arial, sans-serif"; ctx.fillStyle=p.muted; ctx.font=subFont; wrapText(sub,maxW,subFont).slice(0,3).forEach(function(line,i){ctx.fillText(line,left,subY+i*w*.035*s);});
+        var cta=q("adCta").value||"了解更多"; var by=Math.min(h-w*.15,subY+w*.15); ctx.fillStyle=p.accent; roundedRect(left,by,Math.max(w*.18,ctx.measureText(cta).width+w*.07),w*.06,w*.03); ctx.fill(); ctx.fillStyle=p.deep==="#090806"?"#16130d":"#fffdf7"; ctx.font="900 "+Math.round(w*.022*s)+"px Arial, sans-serif"; ctx.fillText(cta,left+w*.032,by+w*.04);
       }
-      function drawSceneText(p, w, h) {
-        var mode = q("adLayoutMode") ? q("adLayoutMode").value : "product";
-        if (mode === "poster") return;
-        var name = q("adProductName").value || "GA黃金甲";
-        var style = q("adStyle").value || "乾淨棚拍";
-        ctx.fillStyle = "rgba(255,255,255,.74)";
-        roundedRect(w*.09, h*.075, w*.82, h*.1, 24); ctx.fill();
-        ctx.fillStyle = p.ink; ctx.font = "900 " + Math.round(w*.035) + "px Arial, sans-serif";
-        ctx.textAlign = "center"; ctx.fillText(name, w*.5, h*.12);
-        ctx.fillStyle = p.muted; ctx.font = "500 " + Math.round(w*.018) + "px Arial, sans-serif"; ctx.fillText(style + " / 商品情境圖", w*.5, h*.15); ctx.textAlign = "left";
-      }
-      function drawCanvas() {
-        var size = readSize(); canvas.width = size.w; canvas.height = size.h;
-        var w = canvas.width, h = canvas.height, p = palettes[q("adTheme").value] || palettes.gold;
-        var layoutMode = q("adLayoutMode") ? q("adLayoutMode").value : "product";
-        drawBackground(p, w, h);
-        ctx.fillStyle = "rgba(255,255,255,.3)";
-        roundedRect(w*.06, h*.06, w*.88, h*.88, Math.min(w,h)*.035); ctx.fill();
-        if (state.image) drawProduct(state.image, p, w, h);
-        else {
-          ctx.fillStyle = "rgba(255,255,255,.7)"; roundedRect(w*.32, h*.32, w*.36, h*.28, 28); ctx.fill();
-          ctx.fillStyle = p.muted; ctx.font = "700 " + Math.round(w*.026) + "px Arial, sans-serif"; ctx.textAlign = "center"; ctx.fillText("上傳產品照後產生預覽", w*.5, h*.47); ctx.textAlign = "left";
-        }
-        if (state.mode === "ad") drawAdText(p, w, h); else drawSceneText(p, w, h);
-        if (layoutMode !== "poster") {
-          ctx.fillStyle = p.muted; ctx.globalAlpha = .82; ctx.font = "700 " + Math.round(w*.018) + "px Arial, sans-serif";
-          ctx.fillText("GA黃金甲", w*.075, h - w*.055); ctx.globalAlpha = 1;
-        }
-        q("downloadAdImage").href = canvas.toDataURL("image/png");
-        refreshPrompt();
-      }
-      function refreshPrompt() {
-        var prompt = [
-          "請根據產品照片製作一張 GA黃金甲品牌行銷圖。",
-          "圖片類型：" + (state.mode === "ad" ? "帶文案的廣告行銷圖" : "商品棚拍情境圖"),
-          "產品名稱：" + (q("adProductName").value || "GA黃金甲產品"),
-          "目標客群：" + (q("adAudience").value || "重視健康的會員"),
-          "主標語：" + (q("adCopy").value || ""),
-          "副標：" + (q("adSubCopy").value || ""),
-          "視覺風格：" + q("adStyle").value,
-          "品牌感：溫暖、信任、健康照顧、乾淨高級，避免醫療宣稱。"
-        ].join("\n");
-        var el = q("adPromptPreview"); if (el) el.textContent = prompt;
-        return prompt;
-      }
-      document.querySelectorAll("[data-ad-mode]").forEach(function(btn) {
-        btn.addEventListener("click", function() {
-          state.mode = btn.getAttribute("data-ad-mode");
-          document.querySelectorAll("[data-ad-mode]").forEach(function(b) { b.classList.toggle("active", b === btn); });
-          drawCanvas(); status(state.mode === "ad" ? "已切換為帶文案廣告圖。" : "已切換為商品棚拍情境圖。");
-        });
-      });
-      q("productPhoto").addEventListener("change", function() {
-        var file = this.files && this.files[0]; if (!file) return;
-        var url = URL.createObjectURL(file); state.imageUrl = url;
-        q("productPreview").src = url; q("productDrop").classList.add("has-image");
-        var img = new Image(); img.onload = function() { state.image = img; drawCanvas(); status((q("adLayoutMode") && q("adLayoutMode").value === "poster") ? "已用展示模式載入完整廣告圖，不會再疊文字。" : "產品照已載入，可下載圖片。"); }; img.src = url;
-      });
-      ["adProductName","adAudience","adCopy","adSubCopy","adStyle","adTheme","adSize","adCta","productScale","textScale","adLayoutMode"].forEach(function(id) { var el = q(id); if (el) el.addEventListener("input", drawCanvas); if (el) el.addEventListener("change", drawCanvas); });
-      q("renderAdImage").addEventListener("click", function() { drawCanvas(); status("圖片已合成，可下載 PNG。"); });
-      q("sampleAdData").addEventListener("click", function() {
-        q("adProductName").value = "GA黃金甲 白藜蘆醇飲";
-        q("adAudience").value = "想建立日常保養習慣的熟齡會員";
-        q("adCopy").value = "每天一包，把照顧自己變簡單";
-        q("adSubCopy").value = "溫和補給日常所需，讓保養成為生活裡穩定的小儀式。";
-        q("adCta").value = "查看保養方案";
-        q("adStyle").value = "溫暖高級感";
-        q("adTheme").value = "gold";
-        drawCanvas(); status("已套用範例內容。");
-      });
-      q("copyAdPrompt").addEventListener("click", async function() { await navigator.clipboard.writeText(refreshPrompt()); status("AI 提示詞已複製。"); });
-      document.querySelectorAll("[data-maker-mode]").forEach(function(btn) {
-        btn.addEventListener("click", function() { setMakerMode(btn.getAttribute("data-maker-mode")); });
-      });
-      q("optimizeAiPrompt").addEventListener("click", async function() {
-        var base = aiBaseUrl();
-        var key = tempOpenAiKey();
-        if (key && !base) {
-          status("正在用臨時 Key 呼叫 OpenAI 優化提示詞。");
-          try {
-            var optimizedText = await optimizePromptDirectly(key);
-            q("aiPhotoStyle").value = optimizedText;
-            refreshPrompt();
-            q("aiPhotoResult").innerHTML = '<div class="image-placeholder"><strong>提示詞已由 AI 優化</strong><br>現在可以按「AI 生成照片」。</div>';
-            status("AI 已優化提示詞，可以生成照片。");
-          } catch (error) {
-            renderAiBlockedMessage("臨時 Key 優化失敗：" + error.message + "。若瀏覽器跨網域被擋，請改用 Vercel 後端。");
-            status("AI 優化失敗：" + error.message);
-          }
-          return;
-        }
-        if (!base && location.hostname.indexOf('github.io') >= 0) {
-          var optimized = [
-            "高品質商業廣告照片，產品為主角，保留產品包裝辨識度。",
-            "場景：乾淨明亮的桌面或生活情境，柔和自然光，健康保養氛圍。",
-            "構圖：商品清楚置中或三分構圖，留白可放文案，背景不要雜亂。",
-            "品牌感：溫暖、信任、乾淨高級、日常照顧感。",
-            "限制：不要醫療宣稱，不要誇大療效，不要新增不存在的品牌字樣，不要讓產品包裝變形。"
-          ].join("\n");
-          q("aiPhotoStyle").value = optimized;
-          refreshPrompt();
-          renderAiBlockedMessage("我已先幫你把提示詞優化好；但真正生圖需要 Vercel 後端。你可以先複製提示詞，或接好後端後再按 AI 生成照片。");
-          status("已用本機規則優化提示詞；尚未呼叫 OpenAI，因為目前沒有安全後端。");
-          return;
-        }
-        status("正在呼叫後端優化提示詞。");
-        try {
-          var response = await fetch(base + "/api/generate-copy", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              mode: state.mode,
-              productName: q("adProductName").value,
-              audience: q("adAudience").value,
-              sellingPoints: q("adSubCopy").value,
-              style: q("adStyle").value
-            })
-          });
-          var data = await response.json().catch(function() { return {}; });
-          if (!response.ok) throw new Error((data.error && data.error.message) || data.error || "提示詞優化失敗");
-          q("adCopy").value = data.copy || q("adCopy").value;
-          q("aiPhotoStyle").value = buildAiPrompt();
-          refreshPrompt();
-          status("AI 已優化文案與提示詞，可以生成照片。");
-        } catch (error) {
-          renderAiBlockedMessage("提示詞優化失敗：" + error.message);
-          status("提示詞優化失敗：" + error.message);
-        }
-      });
-      q("generateAiPhoto").addEventListener("click", async function() {
-        if (!state.imageUrl) { renderAiBlockedMessage("請先上傳產品照，AI 才能參考產品外觀。"); status("請先上傳產品照。"); return; }
-        var directKey = tempOpenAiKey();
-        if (isGithubPagesWithoutBackend() && !directKey) { renderAiBlockedMessage("你已經切到 AI 生成模式，但目前公開站是 GitHub Pages，沒有後端可呼叫 OpenAI。若只是測試，請貼上臨時 OpenAI API Key；正式版請部署 Vercel 後端。"); status("尚未輸入臨時 Key，也未連接安全後端，所以不會產出圖片。"); return; }
-        var btn = q("generateAiPhoto");
-        btn.disabled = true; btn.textContent = "AI 生成中...";
-        status("正在呼叫 AI 後端生成照片，可能需要 20-60 秒。");
-        try {
-          var file = q("productPhoto").files && q("productPhoto").files[0];
-          if (directKey && !aiBaseUrl()) {
-            status("正在用臨時 Key 直接呼叫 OpenAI 生成圖片，可能需要 20-60 秒。");
-            var directImageUrl = await generateImageDirectly(directKey, file);
-            if (!directImageUrl) throw new Error("OpenAI 有回應，但沒有收到圖片資料");
-            q("aiPhotoResult").innerHTML = '<img class="ai-generated-image" alt="AI 生成的廣告照片" src="' + directImageUrl + '">';
-            q("downloadAdImage").href = directImageUrl;
-            status("AI 照片生成完成，可下載 PNG。");
-            return;
-          }
-          var imageDataUrl = await readFileAsDataUrl(file);
-          var response = await fetch(aiBaseUrl() + "/api/generate-ad-image", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              prompt: buildAiPrompt(),
-              imageDataUrl: imageDataUrl,
-              imageName: file.name || "product.png",
-              model: "gpt-image-1",
-              size: q("adSize").value === "1080x1920" ? "1024x1536" : q("adSize").value === "1600x900" ? "1536x1024" : "1024x1024",
-              quality: "medium"
-            })
-          });
-          var data = await response.json().catch(function() { return {}; });
-          if (!response.ok) throw new Error((data.error && data.error.message) || data.error || "AI 後端沒有成功回應");
-          var imageUrl = data.imageUrl || (data.b64_json ? "data:image/png;base64," + data.b64_json : "");
-          if (!imageUrl) throw new Error("沒有收到圖片資料");
-          q("aiPhotoResult").innerHTML = '<img class="ai-generated-image" alt="AI 生成的廣告照片" src="' + imageUrl + '">';
-          q("downloadAdImage").href = imageUrl;
-          status("AI 照片生成完成，可下載 PNG。");
-        } catch (error) {
-          status("AI 生成失敗：" + error.message + "。如果目前是 GitHub Pages，請先部署 Vercel 後端並填入後端網址。");
-        } finally {
-          btn.disabled = false; btn.textContent = "AI 生成照片";
-        }
-      });
-      setMakerMode("canvas");
+      function drawCanvas() { var size=readSize(); canvas.width=size.w; canvas.height=size.h; var w=size.w,h=size.h,p=palettes[q("adTheme").value]||palettes.gold, mode=q("adTemplate").value; drawBackground(p,w,h); ctx.fillStyle="rgba(255,255,255,.34)"; roundedRect(w*.055,h*.055,w*.89,h*.89,Math.min(w,h)*.035); ctx.fill(); drawImageCard(state.image,p,w,h,mode); drawText(p,w,h,mode); ctx.fillStyle=p.muted; ctx.globalAlpha=.82; ctx.font="700 "+Math.round(w*.017)+"px Arial, sans-serif"; ctx.fillText("GA黃金甲",w*.075,h-w*.055); ctx.globalAlpha=1; q("downloadAdImage").href=canvas.toDataURL("image/png"); q("downloadAdImage").download="ga-"+mode+"-"+size.w+"x"+size.h+".png"; refreshCopyPanel(); }
+      function autoCopy() { var t=templateCopy[q("adTemplate").value]||templateCopy.launch; q("adCopy").value=t.copy; q("adSubCopy").value=t.sub; q("adCta").value=t.cta; q("adOffer").value=t.title; drawCanvas(); status("已依版型產生文案。"); }
+      function riskCheckText() { var text=[q("adCopy").value,q("adSubCopy").value,q("adOffer").value].join(" "); var hits=banned.filter(function(w){return text.indexOf(w)>=0;}); return hits.length ? "禁用語提醒："+hits.join("、")+"。建議改成生活化、保養習慣、日常照顧等說法。" : "禁用語檢查：目前沒有發現高風險療效字眼。"; }
+      function postText() { return ["【"+(q("adOffer").value||"GA黃金甲活動")+"】", q("adCopy").value, q("adSubCopy").value, "適合："+(q("adAudience").value||"重視健康的會員"), "行動："+(q("adCta").value||"了解更多")].join("\n"); }
+      function refreshCopyPanel() { q("adPromptPreview").textContent = postText()+"\n\n"+riskCheckText(); }
+      function downloadCurrent(filename) { q("downloadAdImage").download=filename; q("downloadAdImage").href=canvas.toDataURL("image/png"); q("downloadAdImage").click(); }
+      function downloadAllSizes() { var sizes=["1080x1080","1080x1350","1080x1920","1040x1040","1600x900"]; var original=q("adSize").value; var mode=q("adTemplate").value; sizes.forEach(function(size,idx){ setTimeout(function(){ q("adSize").value=size; drawCanvas(); downloadCurrent("ga-"+mode+"-"+size+".png"); if(idx===sizes.length-1){q("adSize").value=original; drawCanvas(); status("已產出多尺寸下載。");}}, idx*450); }); }
+      q("productPhoto").addEventListener("change", function(){ var file=this.files&&this.files[0]; if(!file) return; var url=URL.createObjectURL(file); state.imageUrl=url; q("productPreview").src=url; q("productDrop").classList.add("has-image"); var img=new Image(); img.onload=function(){state.image=img; drawCanvas(); status("產品圖已載入。");}; img.src=url; });
+      ["adTemplate","adProductName","adAudience","adOffer","adCta","adCopy","adSubCopy","adTheme","adSize","productScale","textScale"].forEach(function(id){ var el=q(id); if(el){ el.addEventListener("input",drawCanvas); el.addEventListener("change",drawCanvas); } });
+      q("sampleAdData").addEventListener("click", function(){ q("adProductName").value="GA黃金甲 白藜蘆醇飲"; q("adAudience").value="想建立日常保養習慣的熟齡會員"; q("adTemplate").value="member"; q("adTheme").value="gold"; autoCopy(); status("已套用範例內容。"); });
+      q("autoCopyButton").addEventListener("click", autoCopy);
+      q("renderAdImage").addEventListener("click", function(){ drawCanvas(); status("圖片已合成，可下載 PNG。"); });
+      q("downloadAllSizes").addEventListener("click", downloadAllSizes);
+      q("copyPostText").addEventListener("click", async function(){ await navigator.clipboard.writeText(postText()); status("貼文文案已複製。"); });
       drawCanvas();
     }
-    if (document.readyState === "loading") {
-      document.addEventListener("DOMContentLoaded", initAdGenerator);
-    } else {
-      initAdGenerator();
-    }
+    if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initAdGenerator); else initAdGenerator();
   </script>
   <script>
     function initMaddyTabs() {
