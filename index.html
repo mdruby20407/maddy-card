@@ -115,6 +115,7 @@
     .canvas-shell { width: 100%; background: #fffaf0; border: 1px solid var(--line); border-radius: 10px; padding: 14px; display: grid; place-items: center; overflow: auto; }
     .canvas-shell canvas { width: 100%; max-width: 620px; height: auto; border-radius: 8px; box-shadow: 0 18px 50px rgba(49,42,30,.18); background: #fff; }
     .ad-helper-warning { border: 1px solid #dfc387; background: #fff8e7; color: #6f4d16; border-radius: 8px; padding: 10px 12px; font-size: 13px; line-height: 1.55; }
+    .canvas-shell .ai-generated-image { width: 100%; max-width: 620px; height: auto; border-radius: 8px; box-shadow: 0 18px 50px rgba(49,42,30,.18); }
 
     @media (max-width:960px) { .generator-grid { grid-template-columns: 1fr; } }
     @media (max-width:620px) { .field-row, .segmented { grid-template-columns: 1fr; } .generator-card { padding: 16px; } .image-result { min-height: 320px; } }
@@ -198,6 +199,7 @@
         <div class="generator-grid">
           <div class="generator-card">
             <h2>作圖設定</h2>
+            <div class="field"><label>生成方式</label><div class="segmented" role="group" aria-label="生成方式"><button type="button" class="active" data-maker-mode="canvas">快速排版</button><button type="button" data-maker-mode="ai">AI 生成照片</button></div><p class="key-note">快速排版可直接下載；AI 生成照片會呼叫安全後端，需部署 Vercel 並設定 OPENAI_API_KEY。</p></div>
             <div class="generator-form">
               <div class="field"><label>圖片類型</label><div class="segmented" role="group" aria-label="圖片類型"><button type="button" class="active" data-ad-mode="ad">帶文案廣告圖</button><button type="button" data-ad-mode="scene">商品棚拍情境圖</button></div></div>
               <div class="field"><label for="adLayoutMode">上傳圖片類型</label><select id="adLayoutMode"><option value="product">產品去背照 / 商品照，套新版型</option><option value="poster">已完成廣告圖，只做美化展示</option><option value="clean">產品照，簡潔不疊大字</option></select><p class="key-note">如果上傳的是已經有文案的廣告圖，請選「已完成廣告圖」，避免文字重疊。</p></div>
@@ -208,13 +210,15 @@
               <div class="field-row"><div class="field"><label for="adStyle">視覺風格</label><select id="adStyle"><option>溫暖高級感</option><option>乾淨棚拍</option><option>自然生活感</option><option>節慶活動感</option><option>社群貼文感</option></select></div><div class="field"><label for="adTheme">主色系</label><select id="adTheme"><option value="gold">品牌金</option><option value="green">草本綠</option><option value="rose">溫柔玫瑰</option><option value="blue">清爽藍</option><option value="charcoal">高級黑金</option></select></div></div>
               <div class="field-row"><div class="field"><label for="adSize">圖片比例</label><select id="adSize"><option value="1080x1080">方形 1:1</option><option value="1080x1350">社群直式 4:5</option><option value="1080x1920">限動 9:16</option><option value="1600x900">橫式 16:9</option></select></div><div class="field"><label for="adCta">CTA 按鈕文字</label><input id="adCta" value="了解更多" placeholder="例如：立即諮詢、查看方案"></div></div>
               <div class="field-row"><div class="field"><label for="productScale">商品大小</label><input id="productScale" type="range" min="42" max="88" value="66"></div><div class="field"><label for="textScale">文字大小</label><input id="textScale" type="range" min="80" max="125" value="100"></div></div>
-              <div class="generator-actions"><button class="button" type="button" id="sampleAdData">一鍵範例</button><button class="button primary" type="button" id="renderAdImage">立即合成圖片</button></div>
+              <div class="field" id="aiBackendField" style="display:none"><label for="aiBackendUrl">AI 後端網址</label><input id="aiBackendUrl" type="url" placeholder="例如：https://你的-vercel 網址；留空使用同網域 /api"><p class="key-note">GitHub Pages 不能執行 AI 後端。若要真的生圖，請用 Vercel 網址或同 repo 部署後的網址。</p></div>
+              <div class="field" id="aiPhotoStyleField" style="display:none"><label for="aiPhotoStyle">AI 照片描述</label><textarea id="aiPhotoStyle" placeholder="描述你想要的廣告照片情境">生成一張可用於社群貼文的高級保健食品廣告照片：產品放在乾淨明亮的桌面上，柔和自然光，背景有健康生活感，不要醫療宣稱，畫面留白可放文案。</textarea></div>
+              <div class="generator-actions"><button class="button" type="button" id="sampleAdData">一鍵範例</button><button class="button primary" type="button" id="renderAdImage">立即合成圖片</button><button class="button primary" type="button" id="generateAiPhoto" style="display:none">AI 生成照片</button></div>
               <p class="api-status" id="adApiStatus">狀態：可直接作圖，不需 OpenAI API Key。</p>
             </div>
           </div>
           <div class="generator-card">
             <h2>圖片預覽</h2>
-            <div class="canvas-shell"><canvas id="adCanvas" width="1080" height="1080" aria-label="廣告圖預覽"></canvas></div>
+            <div class="canvas-shell"><canvas id="adCanvas" width="1080" height="1080" aria-label="廣告圖預覽"></canvas><div class="image-placeholder" id="aiPhotoResult" style="display:none">AI 生成照片會顯示在這裡。</div></div>
             <div class="download-row"><button class="button" type="button" id="copyAdPrompt">複製 AI 提示詞</button><a class="button primary" id="downloadAdImage" href="#" download="maddy-ad-image.png">下載 PNG</a></div>
             <div class="prompt-preview" id="adPromptPreview">提示詞會依你的設定自動整理，可複製給 AI 做更進階的圖片生成。</div>
           </div>
@@ -392,7 +396,7 @@
 
   <script>
     function initAdGenerator() {
-      var state = { mode: "ad", image: null, imageUrl: "" };
+      var state = { mode: "ad", makerMode: "canvas", image: null, imageUrl: "" };
       var q = function(id) { return document.getElementById(id); };
       var canvas = q("adCanvas");
       if (!canvas) return;
@@ -405,6 +409,40 @@
         charcoal: { bg1: "#2d2a22", bg2: "#0f0e0b", ink: "#fff8ea", muted: "#e0d0ad", accent: "#d4aa55", deep: "#090806" }
       };
       function status(text) { var el = q("adApiStatus"); if (el) el.textContent = "狀態：" + text; }
+      function setMakerMode(mode) {
+        state.makerMode = mode;
+        document.querySelectorAll("[data-maker-mode]").forEach(function(btn) { btn.classList.toggle("active", btn.getAttribute("data-maker-mode") === mode); });
+        var isAi = mode === "ai";
+        ["aiBackendField", "aiPhotoStyleField"].forEach(function(id) { var el = q(id); if (el) el.style.display = isAi ? "block" : "none"; });
+        q("generateAiPhoto").style.display = isAi ? "inline-flex" : "none";
+        q("renderAdImage").style.display = isAi ? "none" : "inline-flex";
+        q("adCanvas").style.display = isAi ? "none" : "block";
+        q("aiPhotoResult").style.display = isAi ? "grid" : "none";
+        status(isAi ? "AI 生成照片需後端部署；請上傳產品照後產生。" : "可直接作圖，不需 OpenAI API Key。");
+      }
+      function aiBaseUrl() {
+        var custom = q("aiBackendUrl") ? q("aiBackendUrl").value.trim().replace(/\/$/, "") : "";
+        return custom || "";
+      }
+      function readFileAsDataUrl(file) {
+        return new Promise(function(resolve, reject) {
+          var reader = new FileReader();
+          reader.onload = function() { resolve(reader.result); };
+          reader.onerror = reject;
+          reader.readAsDataURL(file);
+        });
+      }
+      function buildAiPrompt() {
+        return [
+          q("aiPhotoStyle").value || "生成一張可用於社群貼文的高級商品廣告照片。",
+          "產品名稱：" + (q("adProductName").value || "GA黃金甲產品"),
+          "目標客群：" + (q("adAudience").value || "重視健康的會員"),
+          "主標語方向：" + (q("adCopy").value || ""),
+          "副標方向：" + (q("adSubCopy").value || ""),
+          "圖片類型：" + (state.mode === "ad" ? "可用於廣告或貼文的情境照片" : "商品棚拍情境照片"),
+          "要求：產品外觀需保留辨識度；不要醫療宣稱；不要誇大療效；不要亂加不存在的品牌字樣；畫面要可商用、乾淨、高級。"
+        ].join("\n");
+      }
       function readSize() { var parts = q("adSize").value.split("x").map(Number); return { w: parts[0], h: parts[1] }; }
       function wrapText(text, maxWidth, font) {
         ctx.font = font;
@@ -584,6 +622,43 @@
         drawCanvas(); status("已套用範例內容。");
       });
       q("copyAdPrompt").addEventListener("click", async function() { await navigator.clipboard.writeText(refreshPrompt()); status("AI 提示詞已複製。"); });
+      document.querySelectorAll("[data-maker-mode]").forEach(function(btn) {
+        btn.addEventListener("click", function() { setMakerMode(btn.getAttribute("data-maker-mode")); });
+      });
+      q("generateAiPhoto").addEventListener("click", async function() {
+        if (!state.imageUrl) { status("請先上傳產品照，AI 才能參考產品外觀。"); return; }
+        var btn = q("generateAiPhoto");
+        btn.disabled = true; btn.textContent = "AI 生成中...";
+        status("正在呼叫 AI 後端生成照片，可能需要 20-60 秒。");
+        try {
+          var file = q("productPhoto").files && q("productPhoto").files[0];
+          var imageDataUrl = await readFileAsDataUrl(file);
+          var response = await fetch(aiBaseUrl() + "/api/generate-ad-image", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              prompt: buildAiPrompt(),
+              imageDataUrl: imageDataUrl,
+              imageName: file.name || "product.png",
+              model: "gpt-image-1",
+              size: q("adSize").value === "1080x1920" ? "1024x1536" : q("adSize").value === "1600x900" ? "1536x1024" : "1024x1024",
+              quality: "medium"
+            })
+          });
+          var data = await response.json().catch(function() { return {}; });
+          if (!response.ok) throw new Error((data.error && data.error.message) || data.error || "AI 後端沒有成功回應");
+          var imageUrl = data.imageUrl || (data.b64_json ? "data:image/png;base64," + data.b64_json : "");
+          if (!imageUrl) throw new Error("沒有收到圖片資料");
+          q("aiPhotoResult").innerHTML = '<img class="ai-generated-image" alt="AI 生成的廣告照片" src="' + imageUrl + '">';
+          q("downloadAdImage").href = imageUrl;
+          status("AI 照片生成完成，可下載 PNG。");
+        } catch (error) {
+          status("AI 生成失敗：" + error.message + "。如果目前是 GitHub Pages，請先部署 Vercel 後端並填入後端網址。");
+        } finally {
+          btn.disabled = false; btn.textContent = "AI 生成照片";
+        }
+      });
+      setMakerMode("canvas");
       drawCanvas();
     }
     if (document.readyState === "loading") {
