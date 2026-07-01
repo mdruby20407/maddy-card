@@ -1,0 +1,8 @@
+{
+  "name": "maddy-card-secure-openai-tools",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Secure backend entry for Maddy digital card OpenAI image and copy generation tools.",
+  "engines": { "node": ">=20" }
+}
