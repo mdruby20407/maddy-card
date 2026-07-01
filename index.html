@@ -114,6 +114,7 @@
 
     .canvas-shell { width: 100%; background: #fffaf0; border: 1px solid var(--line); border-radius: 10px; padding: 14px; display: grid; place-items: center; overflow: auto; }
     .canvas-shell canvas { width: 100%; max-width: 620px; height: auto; border-radius: 8px; box-shadow: 0 18px 50px rgba(49,42,30,.18); background: #fff; }
+    .ad-helper-warning { border: 1px solid #dfc387; background: #fff8e7; color: #6f4d16; border-radius: 8px; padding: 10px 12px; font-size: 13px; line-height: 1.55; }
 
     @media (max-width:960px) { .generator-grid { grid-template-columns: 1fr; } }
     @media (max-width:620px) { .field-row, .segmented { grid-template-columns: 1fr; } .generator-card { padding: 16px; } .image-result { min-height: 320px; } }
@@ -199,6 +200,7 @@
             <h2>作圖設定</h2>
             <div class="generator-form">
               <div class="field"><label>圖片類型</label><div class="segmented" role="group" aria-label="圖片類型"><button type="button" class="active" data-ad-mode="ad">帶文案廣告圖</button><button type="button" data-ad-mode="scene">商品棚拍情境圖</button></div></div>
+              <div class="field"><label for="adLayoutMode">上傳圖片類型</label><select id="adLayoutMode"><option value="product">產品去背照 / 商品照，套新版型</option><option value="poster">已完成廣告圖，只做美化展示</option><option value="clean">產品照，簡潔不疊大字</option></select><p class="key-note">如果上傳的是已經有文案的廣告圖，請選「已完成廣告圖」，避免文字重疊。</p></div>
               <div class="field"><label for="productPhoto">產品照片</label><div class="file-drop" id="productDrop"><input id="productPhoto" type="file" accept="image/png,image/jpeg,image/webp"><span>點擊上傳產品照<br>建議使用清楚、背景單純的商品照片</span><img id="productPreview" alt="產品照片預覽"></div></div>
               <div class="field-row"><div class="field"><label for="adProductName">產品名稱</label><input id="adProductName" value="GA黃金甲保健產品" placeholder="例如：白藜蘆醇飲"></div><div class="field"><label for="adAudience">目標客群</label><input id="adAudience" value="重視健康、想日常保養的會員" placeholder="例如：熟齡女性、家庭照護者"></div></div>
               <div class="field"><label for="adCopy">主標語</label><input id="adCopy" value="把日常保養，變成被好好照顧的習慣" placeholder="例如：給每天努力的你，一份溫柔保養"></div>
@@ -439,48 +441,84 @@
         ctx.beginPath(); ctx.arc(w * .16, h * .86, Math.min(w, h) * .28, 0, Math.PI * 2); ctx.fill();
         ctx.globalAlpha = 1;
       }
+      function containRect(img, boxX, boxY, boxW, boxH) {
+        var ratio = Math.min(boxW / img.width, boxH / img.height);
+        var iw = img.width * ratio, ih = img.height * ratio;
+        return { x: boxX + (boxW - iw) / 2, y: boxY + (boxH - ih) / 2, w: iw, h: ih };
+      }
+      function coverRect(img, boxX, boxY, boxW, boxH) {
+        var ratio = Math.max(boxW / img.width, boxH / img.height);
+        var sw = boxW / ratio, sh = boxH / ratio;
+        var sx = (img.width - sw) / 2, sy = (img.height - sh) / 2;
+        return { sx: sx, sy: sy, sw: sw, sh: sh, x: boxX, y: boxY, w: boxW, h: boxH };
+      }
+      function drawUploadedPoster(img, p, w, h) {
+        var pad = Math.min(w, h) * .075;
+        var boxX = pad, boxY = pad, boxW = w - pad * 2, boxH = h - pad * 2;
+        ctx.save();
+        ctx.shadowColor = "rgba(48,37,20,.24)"; ctx.shadowBlur = 42; ctx.shadowOffsetY = 24;
+        roundedRect(boxX, boxY, boxW, boxH, Math.min(w,h)*.028); ctx.fillStyle = "rgba(255,255,255,.72)"; ctx.fill();
+        var r = containRect(img, boxX + pad*.35, boxY + pad*.35, boxW - pad*.7, boxH - pad*.7);
+        ctx.drawImage(img, r.x, r.y, r.w, r.h);
+        ctx.restore();
+        ctx.fillStyle = p.muted; ctx.globalAlpha = .82; ctx.font = "700 " + Math.round(w*.017) + "px Arial, sans-serif";
+        ctx.fillText("GA黃金甲 / 素材展示", pad, h - pad*.38); ctx.globalAlpha = 1;
+      }
       function drawProduct(img, p, w, h) {
+        var mode = q("adLayoutMode") ? q("adLayoutMode").value : "product";
+        if (mode === "poster") { drawUploadedPoster(img, p, w, h); return; }
         var scale = Number(q("productScale").value || 66) / 100;
-        var areaW = state.mode === "ad" ? w * .42 : w * .58;
-        var areaH = state.mode === "ad" ? h * .54 : h * .62;
+        var areaW = state.mode === "ad" ? w * .34 : w * .54;
+        var areaH = state.mode === "ad" ? h * .48 : h * .55;
+        if (mode === "clean") { areaW = w * .48; areaH = h * .56; }
         var maxW = areaW * scale / .66;
         var maxH = areaH * scale / .66;
         var ratio = Math.min(maxW / img.width, maxH / img.height);
         var iw = img.width * ratio, ih = img.height * ratio;
-        var x = state.mode === "ad" ? w * .58 - iw / 2 : w * .5 - iw / 2;
-        var y = state.mode === "ad" ? h * .42 - ih / 2 : h * .42 - ih / 2;
+        var x = state.mode === "ad" ? w * .68 - iw / 2 : w * .5 - iw / 2;
+        var y = state.mode === "ad" ? h * .43 - ih / 2 : h * .46 - ih / 2;
+        if (mode === "clean") { x = w * .5 - iw / 2; y = h * .43 - ih / 2; }
         ctx.save();
-        ctx.shadowColor = "rgba(48,37,20,.28)"; ctx.shadowBlur = 42; ctx.shadowOffsetY = 28;
-        roundedRect(x - w*.025, y - h*.025, iw + w*.05, ih + h*.05, 30); ctx.fillStyle = "rgba(255,255,255,.32)"; ctx.fill();
+        ctx.shadowColor = "rgba(48,37,20,.24)"; ctx.shadowBlur = 34; ctx.shadowOffsetY = 24;
+        roundedRect(x - w*.018, y - h*.018, iw + w*.036, ih + h*.036, 26); ctx.fillStyle = "rgba(255,255,255,.26)"; ctx.fill();
         ctx.drawImage(img, x, y, iw, ih);
         ctx.restore();
         ctx.save();
-        ctx.globalAlpha = .18; ctx.fillStyle = p.deep;
-        ctx.beginPath(); ctx.ellipse(x + iw/2, y + ih + h*.035, iw*.42, Math.max(10, h*.018), 0, 0, Math.PI*2); ctx.fill();
+        ctx.globalAlpha = .16; ctx.fillStyle = p.deep;
+        ctx.beginPath(); ctx.ellipse(x + iw/2, y + ih + h*.035, iw*.36, Math.max(10, h*.016), 0, 0, Math.PI*2); ctx.fill();
         ctx.restore();
       }
       function drawAdText(p, w, h) {
+        var mode = q("adLayoutMode") ? q("adLayoutMode").value : "product";
+        if (mode === "poster") return;
         var s = Number(q("textScale").value || 100) / 100;
-        var left = w * .075, top = h * .14, maxW = w * .45;
-        ctx.fillStyle = p.accent; ctx.font = "800 " + Math.round(w*.025*s) + "px Arial, sans-serif";
+        var left = w * .075, top = h * .14, maxW = mode === "clean" ? w * .72 : w * .43;
+        ctx.fillStyle = p.accent; ctx.font = "800 " + Math.round(w*.022*s) + "px Arial, sans-serif";
         ctx.fillText(q("adProductName").value || "GA黃金甲", left, top);
-        var titleLines = wrapText(q("adCopy").value, maxW, "900 " + Math.round(w*.055*s) + "px Arial, sans-serif").slice(0, 3);
-        ctx.fillStyle = p.ink; ctx.font = "900 " + Math.round(w*.055*s) + "px Arial, sans-serif";
-        titleLines.forEach(function(line, i) { ctx.fillText(line, left, top + w*.08 + i*w*.068*s); });
-        var subY = top + w*.1 + titleLines.length*w*.068*s;
-        var subLines = wrapText(q("adSubCopy").value, maxW, "500 " + Math.round(w*.024*s) + "px Arial, sans-serif").slice(0, 3);
-        ctx.fillStyle = p.muted; ctx.font = "500 " + Math.round(w*.024*s) + "px Arial, sans-serif";
-        subLines.forEach(function(line, i) { ctx.fillText(line, left, subY + i*w*.038*s); });
-        var cta = q("adCta").value || "了解更多";
-        var by = Math.min(h - w*.15, subY + subLines.length*w*.043*s + w*.045);
-        ctx.fillStyle = p.accent; roundedRect(left, by, Math.max(w*.17, ctx.measureText(cta).width + w*.07), w*.065, w*.032); ctx.fill();
-        ctx.fillStyle = p.deep === "#090806" ? "#16130d" : "#fffdf7"; ctx.font = "900 " + Math.round(w*.024*s) + "px Arial, sans-serif";
-        ctx.fillText(cta, left + w*.035, by + w*.043);
+        if (mode !== "clean") {
+          var titleLines = wrapText(q("adCopy").value, maxW, "900 " + Math.round(w*.048*s) + "px Arial, sans-serif").slice(0, 3);
+          ctx.fillStyle = p.ink; ctx.font = "900 " + Math.round(w*.048*s) + "px Arial, sans-serif";
+          titleLines.forEach(function(line, i) { ctx.fillText(line, left, top + w*.075 + i*w*.06*s); });
+          var subY = top + w*.095 + titleLines.length*w*.06*s;
+          var subLines = wrapText(q("adSubCopy").value, maxW, "500 " + Math.round(w*.022*s) + "px Arial, sans-serif").slice(0, 3);
+          ctx.fillStyle = p.muted; ctx.font = "500 " + Math.round(w*.022*s) + "px Arial, sans-serif";
+          subLines.forEach(function(line, i) { ctx.fillText(line, left, subY + i*w*.035*s); });
+          var cta = q("adCta").value || "了解更多";
+          var by = Math.min(h - w*.15, subY + subLines.length*w*.04*s + w*.04);
+          ctx.fillStyle = p.accent; roundedRect(left, by, Math.max(w*.17, ctx.measureText(cta).width + w*.065), w*.06, w*.03); ctx.fill();
+          ctx.fillStyle = p.deep === "#090806" ? "#16130d" : "#fffdf7"; ctx.font = "900 " + Math.round(w*.022*s) + "px Arial, sans-serif";
+          ctx.fillText(cta, left + w*.032, by + w*.04);
+        } else {
+          ctx.fillStyle = p.muted; ctx.font = "600 " + Math.round(w*.022*s) + "px Arial, sans-serif";
+          wrapText(q("adSubCopy").value, maxW, ctx.font).slice(0, 2).forEach(function(line, i) { ctx.fillText(line, left, top + w*.055 + i*w*.036*s); });
+        }
       }
       function drawSceneText(p, w, h) {
+        var mode = q("adLayoutMode") ? q("adLayoutMode").value : "product";
+        if (mode === "poster") return;
         var name = q("adProductName").value || "GA黃金甲";
         var style = q("adStyle").value || "乾淨棚拍";
-        ctx.fillStyle = "rgba(255,255,255,.72)";
+        ctx.fillStyle = "rgba(255,255,255,.74)";
         roundedRect(w*.09, h*.075, w*.82, h*.1, 24); ctx.fill();
         ctx.fillStyle = p.ink; ctx.font = "900 " + Math.round(w*.035) + "px Arial, sans-serif";
         ctx.textAlign = "center"; ctx.fillText(name, w*.5, h*.12);
@@ -489,6 +527,7 @@
       function drawCanvas() {
         var size = readSize(); canvas.width = size.w; canvas.height = size.h;
         var w = canvas.width, h = canvas.height, p = palettes[q("adTheme").value] || palettes.gold;
+        var layoutMode = q("adLayoutMode") ? q("adLayoutMode").value : "product";
         drawBackground(p, w, h);
         ctx.fillStyle = "rgba(255,255,255,.3)";
         roundedRect(w*.06, h*.06, w*.88, h*.88, Math.min(w,h)*.035); ctx.fill();
@@ -498,8 +537,10 @@
           ctx.fillStyle = p.muted; ctx.font = "700 " + Math.round(w*.026) + "px Arial, sans-serif"; ctx.textAlign = "center"; ctx.fillText("上傳產品照後產生預覽", w*.5, h*.47); ctx.textAlign = "left";
         }
         if (state.mode === "ad") drawAdText(p, w, h); else drawSceneText(p, w, h);
-        ctx.fillStyle = p.muted; ctx.globalAlpha = .82; ctx.font = "700 " + Math.round(w*.018) + "px Arial, sans-serif";
-        ctx.fillText("GA黃金甲", w*.075, h - w*.055); ctx.globalAlpha = 1;
+        if (layoutMode !== "poster") {
+          ctx.fillStyle = p.muted; ctx.globalAlpha = .82; ctx.font = "700 " + Math.round(w*.018) + "px Arial, sans-serif";
+          ctx.fillText("GA黃金甲", w*.075, h - w*.055); ctx.globalAlpha = 1;
+        }
         q("downloadAdImage").href = canvas.toDataURL("image/png");
         refreshPrompt();
       }
@@ -528,9 +569,9 @@
         var file = this.files && this.files[0]; if (!file) return;
         var url = URL.createObjectURL(file); state.imageUrl = url;
         q("productPreview").src = url; q("productDrop").classList.add("has-image");
-        var img = new Image(); img.onload = function() { state.image = img; drawCanvas(); status("產品照已載入，可下載圖片。"); }; img.src = url;
+        var img = new Image(); img.onload = function() { state.image = img; drawCanvas(); status((q("adLayoutMode") && q("adLayoutMode").value === "poster") ? "已用展示模式載入完整廣告圖，不會再疊文字。" : "產品照已載入，可下載圖片。"); }; img.src = url;
       });
-      ["adProductName","adAudience","adCopy","adSubCopy","adStyle","adTheme","adSize","adCta","productScale","textScale"].forEach(function(id) { var el = q(id); if (el) el.addEventListener("input", drawCanvas); if (el) el.addEventListener("change", drawCanvas); });
+      ["adProductName","adAudience","adCopy","adSubCopy","adStyle","adTheme","adSize","adCta","productScale","textScale","adLayoutMode"].forEach(function(id) { var el = q(id); if (el) el.addEventListener("input", drawCanvas); if (el) el.addEventListener("change", drawCanvas); });
       q("renderAdImage").addEventListener("click", function() { drawCanvas(); status("圖片已合成，可下載 PNG。"); });
       q("sampleAdData").addEventListener("click", function() {
         q("adProductName").value = "GA黃金甲 白藜蘆醇飲";
