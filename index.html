@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Maddy | Customer Experience / CRM</title>
+  <meta name="description" content="Maddy 的個人數位名片：會員關係管理、客戶體驗、品牌服務企劃與客戶洞察。">
+  <meta property="og:title" content="Maddy | Customer Experience / CRM">
+  <meta property="og:description" content="把每一次客戶對話，轉化成品牌信任與改善方向。">
+  <meta property="og:type" content="website">
+  <meta name="theme-color" content="#2b2924">
+  <style>
+    :root { --ink:#27231d; --muted:#665f55; --paper:#fffaf1; --line:#e6d9c4; --gold:#c99b45; --gold-dark:#7a5a20; --white:#fff; --shadow:0 24px 60px rgba(80,58,25,.16); }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { margin:0; min-height:100vh; color:var(--ink); background:radial-gradient(circle at 12% 8%, rgba(201,155,69,.22), transparent 26rem), linear-gradient(135deg,#fbf6ed 0%,#f7f0e4 52%,#eef1eb 100%); font-family:"Microsoft JhengHei","Noto Sans TC",system-ui,sans-serif; line-height:1.7; }
+    a { color: inherit; }
+    .page { width:min(1080px, calc(100% - 32px)); margin:0 auto; padding:28px 0 42px; }
+    .topbar { display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:14px; color:#6a6257; font-size:14px; }
+    .brand { display:inline-flex; align-items:center; gap:10px; font-weight:800; }
+    .dot { width:11px; height:11px; border-radius:50%; background:var(--gold); box-shadow:0 0 0 5px rgba(201,155,69,.16); }
+    .nav { display:flex; gap:14px; flex-wrap:wrap; justify-content:flex-end; }
+    .nav a { text-decoration:none; font-weight:700; }
+    .shell { overflow:hidden; border:1px solid rgba(122,90,32,.2); border-radius:24px; background:rgba(255,250,241,.9); box-shadow:var(--shadow); }
+    .hero { display:grid; grid-template-columns:1.15fr .85fr; min-height:560px; }
+    .intro { padding:clamp(30px,5vw,64px); }
+    .eyebrow { margin:0 0 16px; color:var(--gold-dark); font-size:13px; font-weight:800; }
+    h1 { margin:0; font-size:clamp(54px,8vw,96px); line-height:.95; letter-spacing:0; }
+    .role { margin:20px 0 0; color:var(--gold-dark); font-size:clamp(20px,2.4vw,28px); font-weight:850; }
+    .summary { max-width:650px; margin:26px 0 0; color:#4f4941; font-size:clamp(17px,1.8vw,20px); }
+    .quote { margin-top:30px; padding:20px 22px; border-left:5px solid var(--gold); background:rgba(255,255,255,.72); color:#40382f; font-size:18px; font-weight:760; }
+    .actions { display:flex; flex-wrap:wrap; gap:12px; margin-top:30px; }
+    .button { display:inline-flex; align-items:center; justify-content:center; min-height:46px; padding:11px 18px; border:1px solid var(--line); border-radius:999px; background:var(--white); font-size:15px; font-weight:800; text-decoration:none; }
+    .button.primary { border-color:transparent; background:var(--ink); color:var(--paper); }
+    .visual { display:grid; align-content:space-between; padding:clamp(28px,4vw,48px); background:linear-gradient(145deg,#292721,#66583f 58%,#788673); color:#fff6e4; }
+    .visual-note { max-width:330px; margin:0; color:rgba(255,246,228,.85); font-size:17px; }
+    .mark { display:grid; place-items:center; justify-self:center; width:min(300px,72vw); aspect-ratio:1; border:1px solid rgba(255,246,228,.34); border-radius:50%; background:radial-gradient(circle at 42% 35%,rgba(201,155,69,.72),transparent 5rem),rgba(255,255,255,.08); font-family:Georgia,serif; font-size:clamp(96px,13vw,150px); font-weight:700; }
+    .chips { display:flex; flex-wrap:wrap; gap:10px; }
+    .chip { padding:8px 12px; border:1px solid rgba(255,246,228,.28); border-radius:999px; background:rgba(255,255,255,.08); color:rgba(255,246,228,.92); font-size:13px; font-weight:800; }
+    .section { padding:clamp(30px,5vw,58px) clamp(22px,5vw,64px); border-top:1px solid rgba(122,90,32,.16); }
+    h2 { margin:0 0 22px; font-size:clamp(26px,3vw,36px); line-height:1.25; }
+    .grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px; }
+    .skill { min-height:190px; padding:22px; border:1px solid var(--line); border-radius:10px; background:rgba(255,255,255,.72); }
+    .skill h3 { margin:0 0 10px; font-size:20px; line-height:1.35; }
+    .skill p { margin:0; color:var(--muted); font-size:15.5px; }
+    .value { display:grid; grid-template-columns:.95fr 1.05fr; gap:22px; align-items:start; }
+    .value-card { padding:26px; border-radius:10px; background:var(--ink); color:var(--paper); }
+    .value-card h2 { margin-bottom:12px; }
+    .value-card p { margin:0; color:rgba(255,250,241,.84); font-size:18px; }
+    .steps { display:grid; gap:12px; margin:0; padding:0; list-style:none; }
+    .steps li { padding:16px 0; border-bottom:1px solid var(--line); color:var(--muted); }
+    .steps strong { display:block; color:var(--gold-dark); font-size:14px; }
+    .contact { display:grid; grid-template-columns:1fr auto; gap:20px; align-items:center; padding:clamp(28px,5vw,46px) clamp(22px,5vw,64px); border-top:1px solid rgba(122,90,32,.16); background:rgba(255,255,255,.52); }
+    .contact p { margin:6px 0 0; color:var(--muted); }
+    .fine { margin-top:12px; color:#82786b; font-size:13px; }
+    @media (max-width:860px) { .hero,.value,.contact{grid-template-columns:1fr;} .grid{grid-template-columns:1fr 1fr;} .visual{min-height:390px;} }
+    .tool-intro { max-width: 760px; margin: -8px 0 24px; color: var(--muted); font-size: 17px; }
+    .tool-panel { display: grid; grid-template-columns: .9fr 1.1fr; gap: 18px; align-items: stretch; }
+    .tool-form, .tool-output { padding: 22px; border: 1px solid var(--line); border-radius: 10px; background: rgba(255,255,255,.74); }
+    .tool-form { display: grid; gap: 14px; }
+    .field { display: grid; gap: 7px; }
+    .field label { color: #4e463d; font-size: 14px; font-weight: 800; }
+    .field input, .field textarea, .field select { width: 100%; border: 1px solid #d8cbb6; border-radius: 8px; background: #fffefb; color: var(--ink); font: inherit; padding: 10px 12px; }
+    .field textarea { min-height: 92px; resize: vertical; }
+    .tool-actions { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+    .tool-actions .button { width: 100%; border-radius: 8px; cursor: pointer; }
+    .tool-output h3 { margin: 0 0 10px; font-size: 20px; }
+    .tool-result { min-height: 330px; margin: 0; padding: 16px; border: 1px solid #eadfcd; border-radius: 8px; background: #fffaf1; color: #3f382f; white-space: pre-wrap; font-family: "Microsoft JhengHei", "Noto Sans TC", system-ui, sans-serif; font-size: 15.5px; line-height: 1.7; overflow: auto; }
+    .copy-row { display: flex; justify-content: flex-end; margin-top: 12px; }
+    @media (max-width:860px) { .tool-panel { grid-template-columns: 1fr; } .tool-actions { grid-template-columns: 1fr; } }
+    @media (max-width:620px) { .page{width:min(100% - 20px,520px); padding:12px 0 26px;} .topbar{align-items:flex-start; flex-direction:column;} .nav{justify-content:flex-start;} .shell{border-radius:18px;} .intro,.section,.contact{padding:24px 18px;} .grid{grid-template-columns:1fr;} .actions .button,.contact .button{width:100%;} .visual{min-height:330px;} }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="topbar" aria-label="網站導覽">
+      <div class="brand"><span class="dot" aria-hidden="true"></span><span>Maddy Digital Card</span></div>
+      <nav class="nav"><a href="#about">關於</a><a href="#skills">能力</a><a href="#marketing-tools">工具站</a><a href="#contact">聯絡</a></nav>
+    </header>
+    <article class="shell">
+      <section class="hero" id="about">
+        <div class="intro">
+          <p class="eyebrow">Customer Experience / CRM / Brand Service</p>
+          <h1>Maddy</h1>
+          <p class="role">會員關係管理｜客戶體驗｜品牌服務企劃</p>
+          <p class="summary">目前於 GA黃金甲負責客服與會員關係經營。我擅長站在消費者角度，把第一線對話整理成客戶洞察，協助品牌建立信任、改善服務流程。</p>
+          <div class="quote">客服是品牌與消費者最直接的連結，而我的角色是把每一次對話轉化成品牌信任與改善方向。</div>
+          <div class="actions"><a class="button primary" href="mailto:maddy@reilivingcorp.com">Email 聯絡</a><a class="button" href="#skills">查看核心能力</a></div>
+        </div>
+        <aside class="visual" aria-label="Maddy 個人識別">
+          <p class="visual-note">從回覆問題，到理解需求；從單次服務，到長期會員關係。</p>
+          <div class="mark">M</div>
+          <div class="chips"><span class="chip">客戶溝通</span><span class="chip">會員經營</span><span class="chip">回饋分析</span><span class="chip">流程優化</span></div>
+        </aside>
+      </section>
+      <section class="section" id="skills">
+        <h2>我能替品牌做的事</h2>
+        <div class="grid">
+          <div class="skill"><h3>客戶關係經營</h3><p>透過電話、LINE、Email 與會員溝通，處理售後、客訴與特殊需求，維護 VIP 與長期客戶關係。</p></div>
+          <div class="skill"><h3>客戶洞察分析</h3><p>整理購買原因、產品使用回饋、常見問題與會員需求，將第一線資訊回饋給內部團隊。</p></div>
+          <div class="skill"><h3>會員活動經營</h3><p>參與健康分享、會員互動、抽獎活動、品牌關懷與 VIP 生日關懷，並整理活動後回饋。</p></div>
+          <div class="skill"><h3>跨部門溝通</h3><p>協助對接物流、系統、產品與行銷團隊，把客戶問題轉成可執行的改善建議。</p></div>
+          <div class="skill"><h3>流程與體驗優化</h3><p>從訂單流程、出貨體驗、包裝資訊到溝通節奏，協助品牌讓服務更順、更清楚。</p></div>
+          <div class="skill"><h3>AI 工作效率</h3><p>運用 AI 協助文案整理、客戶回覆優化、活動企劃發想與資料整理分析，提升工作效率與價值。</p></div>
+        </div>
+      </section>
+      <section class="section value">
+        <div class="value-card"><h2>我的工作價值定位</h2><p>我希望透過細節觀察與客戶聲音，讓品牌不只是販售商品，而是真正理解並陪伴消費者。</p></div>
+        <ul class="steps"><li><strong>Listen</strong>聽懂客戶表面問題，也理解背後真正需求與情緒。</li><li><strong>Connect</strong>用穩定、清楚、有溫度的溝通，建立會員對品牌的信任。</li><li><strong>Improve</strong>把客戶回饋整理成可行建議，幫助產品、流程與活動持續變好。</li></ul>
+      </section>
+      <section class="section" id="marketing-tools">
+        <h2>品牌行銷工具站</h2>
+        <p class="tool-intro">把客服與會員經營累積到的第一線觀察，快速轉成可執行的品牌推廣企劃、社群行銷文案與廣告文宣。適合 GA黃金甲日常活動、會員關懷、產品推廣與社群貼文先產出 60 分初稿。</p>
+        <div class="tool-panel">
+          <div class="tool-form" aria-label="品牌行銷工具表單">
+            <div class="field"><label for="campaignTopic">主題 / 產品</label><input id="campaignTopic" value="GA黃金甲會員健康關懷活動" placeholder="例如：新品推廣、會員活動、節慶關懷"></div>
+            <div class="field"><label for="targetAudience">目標客群</label><input id="targetAudience" value="重視健康、已購買或正在觀望的會員與熟客" placeholder="例如：VIP會員、新客、銀髮族、家庭照護者"></div>
+            <div class="field"><label for="customerNeed">客戶需求 / 痛點</label><textarea id="customerNeed" placeholder="寫下客戶最在意的問題">希望有人提醒如何正確使用產品，也想知道品牌是否真的關心使用後的感受。</textarea></div>
+            <div class="field"><label for="brandTone">語氣</label><select id="brandTone"><option>溫暖專業</option><option>親切生活感</option><option>安心信任</option><option>活動感強</option></select></div>
+            <div class="tool-actions">
+              <button class="button primary" type="button" data-tool="plan">品牌推廣企劃</button>
+              <button class="button" type="button" data-tool="social">社群行銷文案</button>
+              <button class="button" type="button" data-tool="ad">廣告文宣</button>
+            </div>
+          </div>
+          <div class="tool-output" aria-live="polite">
+            <h3 id="toolTitle">產出結果</h3>
+            <pre class="tool-result" id="toolResult">先填左邊資料，再選一個功能產生初稿。產出後可直接複製，再交給小黃金做 80 分優化。</pre>
+            <div class="copy-row"><button class="button" type="button" id="copyToolResult">複製結果</button></div>
+          </div>
+        </div>
+      </section>
+      <section class="contact" id="contact">
+        <div><h2>很高興認識你，我是 Maddy。</h2><p>歡迎透過 Email 與我聯絡，一起聊聊會員經營、客戶體驗與品牌服務。</p><div class="fine">maddy@reilivingcorp.com</div></div>
+        <a class="button primary" href="mailto:maddy@reilivingcorp.com">maddy@reilivingcorp.com</a>
+      </section>
+    </article>
+  </main>
+  <script>
+    function toolValue(id, fallback) {
+      var el = document.getElementById(id);
+      return el && el.value.trim() ? el.value.trim() : fallback;
+    }
+    function buildMarketingOutput(type) {
+      var topic = toolValue("campaignTopic", "品牌推廣活動");
+      var audience = toolValue("targetAudience", "目標會員");
+      var need = toolValue("customerNeed", "希望獲得清楚、安心、有溫度的品牌資訊");
+      var tone = toolValue("brandTone", "溫暖專業");
+      if (type === "plan") {
+        return { title: "品牌推廣企劃", text: "【品牌推廣企劃】\n\n主題：" + topic + "\n目標客群：" + audience + "\n溝通語氣：" + tone + "\n\n1. 核心洞察\n客戶表面上想了解活動或產品資訊，真正需要的是被理解、被提醒、被陪伴的安心感。這次推廣應該不只強調商品，而是強調品牌在使用前後都願意關心會員。\n\n2. 企劃目標\n提升會員互動率、增加產品信任感，並蒐集活動後回饋，作為後續服務流程與內容優化依據。\n\n3. 主訊息\nGA黃金甲不只是提供產品，也重視每一位會員的實際使用感受。\n\n4. 執行方式\n- LINE 推播：用短句邀請會員回覆近況或參加活動。\n- 社群貼文：分享健康關懷重點與會員情境。\n- 客服追蹤：針對 VIP 或長期會員主動關心使用狀況。\n- 活動後問卷：整理常見問題、滿意點與改善建議。\n\n5. 驗收指標\nLINE 回覆率、活動參與率、留言互動、問卷填寫率、客戶常見問題是否下降。\n\n6. 下一步\n先做一篇社群貼文、一則 LINE 訊息與一張活動文宣，測試會員對主題的反應。\n\n客戶需求紀錄：" + need };
+      }
+      if (type === "social") {
+        return { title: "社群行銷文案", text: "【社群行銷文案】\n\n貼文主題：" + topic + "\n目標讀者：" + audience + "\n語氣：" + tone + "\n\n你是不是也曾經買了產品，卻不確定自己用得對不對？\n\n對 GA黃金甲來說，服務不是商品寄出就結束。\n我們更在意的是：你使用後的感受、遇到的問題，以及每一次需要協助時，能不能被好好回應。\n\n這次我們想透過會員健康關懷，陪大家重新確認使用狀況，也聽聽你的真實回饋。\n\n因為好的品牌關係，不只來自產品本身，也來自每一次被理解的互動。\n\n想了解更多，歡迎私訊我們，或回覆你的使用狀況。\n\n#GA黃金甲 #會員關懷 #健康生活 #客戶體驗 #品牌服務\n\n內部提醒：這篇文案的重點不是硬賣，而是降低會員開口詢問的壓力。\n客戶需求：" + need };
+      }
+      return { title: "廣告文宣", text: "【廣告文宣】\n\n主標：不只提供產品，更在意你的使用感受\n\n副標：GA黃金甲會員健康關懷，陪你確認需求、整理問題、找到更安心的使用方式。\n\n短版廣告文案：\n買了產品之後，真正重要的是後續有沒有人關心你用得好不好。GA黃金甲重視每一次會員回饋，從使用問題到售後服務，都希望讓你感受到清楚、安心、有溫度的陪伴。\n\nCTA：立即聯絡我們 / 回覆你的使用狀況 / 了解會員關懷活動\n\n文宣重點：\n- 強調售後關懷，不只銷售商品。\n- 對 " + audience + " 說話，避免太廣泛。\n- 用 " + tone + " 語氣建立信任。\n- 把「" + need + "」轉成品牌服務承諾。\n\n可用版面文字：\nGA黃金甲｜會員健康關懷\n把每一次回饋，變成更好的服務體驗。" };
+    }
+    document.querySelectorAll("[data-tool]").forEach(function(button) {
+      button.addEventListener("click", function() {
+        var output = buildMarketingOutput(button.getAttribute("data-tool"));
+        document.getElementById("toolTitle").textContent = output.title;
+        document.getElementById("toolResult").textContent = output.text;
+      });
+    });
+    document.getElementById("copyToolResult").addEventListener("click", async function() {
+      var button = this;
+      try {
+        await navigator.clipboard.writeText(document.getElementById("toolResult").textContent);
+        button.textContent = "已複製";
+        setTimeout(function() { button.textContent = "複製結果"; }, 1600);
+      } catch (error) {
+        button.textContent = "請手動複製";
+      }
+    });
+  </script>
+</body>
+</html>
